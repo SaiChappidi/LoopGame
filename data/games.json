@@ -1,0 +1,371 @@
+[
+  {
+    "id": "stack",
+    "name": "Stack Studio",
+    "developer": "Mellow Works",
+    "developer_id": "mellow",
+    "description": "A little focus. A little rhythm. Stack sculptural blocks into your own impossible tower.",
+    "categories": [
+      "Arcade",
+      "One-Tap"
+    ],
+    "tags": [
+      "arcade",
+      "offline",
+      "original"
+    ],
+    "color": "c7f36b",
+    "short_label": "LAYERS",
+    "scene": "res://games/stack.tscn",
+    "version": "1.0.0",
+    "minimum_platform": 1,
+    "orientation": "portrait",
+    "supports_resume": true,
+    "age_rating": "Everyone",
+    "status": "published",
+    "published": "2026-10-02",
+    "updated": "2026-10-02",
+    "average_session_seconds": 30,
+    "plays": 24800,
+    "likes": 1840,
+    "favorites": 350,
+    "trending": 92,
+    "icon": "res://assets/icon.svg",
+    "thumbnail": "procedural://stack",
+    "preview": "procedural://stack",
+    "input": {
+      "usesTap": true,
+      "usesHold": false,
+      "usesDrag": false,
+      "usesSwipeUp": false,
+      "usesSwipeDown": false,
+      "usesSwipeLeft": false,
+      "usesSwipeRight": false,
+      "usesMultiTouch": false,
+      "usesTilt": false,
+      "usesVirtualJoystick": false,
+      "usesKeyboard": true
+    },
+    "versions": [
+      {
+        "version": "1.0.0",
+        "uploaded": "2026-10-02",
+        "release_notes": "The first edition.",
+        "live": true,
+        "scene": "res://games/stack.tscn"
+      }
+    ],
+    "package_bytes": 131072,
+    "initial_download_bytes": 131072
+  },
+  {
+    "id": "runner",
+    "name": "Skyline Sprint",
+    "developer": "Sunday Club",
+    "developer_id": "sunday",
+    "description": "Run the night market. Dodge trams, vault barriers, slide beneath gates and follow the gold through an original neon city. Collect magnets and shields to keep the run alive.",
+    "categories": [
+      "Runner",
+      "Action"
+    ],
+    "tags": [
+      "runner",
+      "offline",
+      "original"
+    ],
+    "color": "5ee7d0",
+    "short_label": "METERS",
+    "scene": "res://games/runner.tscn",
+    "version": "2.0.0",
+    "minimum_platform": 1,
+    "orientation": "portrait",
+    "supports_resume": true,
+    "age_rating": "Everyone",
+    "status": "published",
+    "published": "2026-10-03",
+    "updated": "2026-10-03",
+    "average_session_seconds": 120,
+    "plays": 18200,
+    "likes": 1420,
+    "favorites": 463,
+    "trending": 88,
+    "icon": "res://assets/icon.svg",
+    "thumbnail": "procedural://runner",
+    "preview": "procedural://runner",
+    "input": {
+      "usesTap": false,
+      "usesHold": false,
+      "usesDrag": false,
+      "usesSwipeUp": true,
+      "usesSwipeDown": true,
+      "usesSwipeLeft": true,
+      "usesSwipeRight": true,
+      "usesMultiTouch": false,
+      "usesTilt": false,
+      "usesVirtualJoystick": false,
+      "usesKeyboard": true
+    },
+    "versions": [
+      {
+        "version": "1.0.0",
+        "uploaded": "2026-10-02",
+        "release_notes": "The first edition.",
+        "live": false,
+        "scene": "res://games/runner.tscn"
+      },
+      {
+        "release_notes": "Original 3D city, articulated courier, coins, magnet and shield.",
+        "version": "2.0.0",
+        "live": true,
+        "uploaded": "2026-10-03",
+        "scene": "res://games/runner.tscn"
+      }
+    ],
+    "package_bytes": 131072,
+    "initial_download_bytes": 131072
+  },
+  {
+    "id": "crowd",
+    "name": "Cell Garden",
+    "developer": "Soft Space",
+    "developer_id": "soft",
+    "description": "An offline cell-eating arena. Gather nutrients, absorb smaller cells and avoid larger CPU rivals. Grow to size 58 to win.",
+    "categories": [
+      "Arcade",
+      "Survival"
+    ],
+    "tags": [
+      "cells",
+      "cpu rivals",
+      "offline",
+      "arena"
+    ],
+    "color": "63e6c5",
+    "short_label": "NUTRIENTS",
+    "scene": "res://games/crowd.tscn",
+    "version": "2.0.0",
+    "minimum_platform": 1,
+    "orientation": "portrait",
+    "supports_resume": true,
+    "age_rating": "Everyone",
+    "status": "published",
+    "published": "2026-10-02",
+    "updated": "2026-10-02",
+    "average_session_seconds": 180,
+    "plays": 9600,
+    "likes": 860,
+    "favorites": 576,
+    "trending": 84,
+    "icon": "res://assets/icon.svg",
+    "thumbnail": "procedural://crowd",
+    "preview": "procedural://crowd",
+    "input": {
+      "usesTap": false,
+      "usesHold": false,
+      "usesDrag": true,
+      "usesSwipeUp": false,
+      "usesSwipeDown": false,
+      "usesSwipeLeft": true,
+      "usesSwipeRight": true,
+      "usesMultiTouch": false,
+      "usesTilt": false,
+      "usesVirtualJoystick": false,
+      "usesKeyboard": true
+    },
+    "versions": [
+      {
+        "version": "1.0.0",
+        "uploaded": "2026-10-02",
+        "release_notes": "The first edition.",
+        "live": true,
+        "scene": "res://games/crowd.tscn"
+      },
+      {
+        "version": "2.0.0",
+        "uploaded": "2026-10-03",
+        "release_notes": "Cell Garden replaces Small World with an offline CPU cell arena.",
+        "live": true,
+        "scene": "res://games/crowd.tscn"
+      }
+    ],
+    "package_bytes": 131072,
+    "initial_download_bytes": 131072
+  },
+  {
+    "id": "racer",
+    "name": "Coastline",
+    "developer": "Sunday Club",
+    "developer_id": "sunday",
+    "description": "A midnight drive with nowhere to be. Thread through traffic and catch a golden boost.",
+    "categories": [
+      "Racing",
+      "Endless"
+    ],
+    "tags": [
+      "racing",
+      "offline",
+      "original"
+    ],
+    "color": "92dbd0",
+    "short_label": "DISTANCE",
+    "scene": "res://games/racer.tscn",
+    "version": "1.0.0",
+    "minimum_platform": 1,
+    "orientation": "portrait",
+    "supports_resume": true,
+    "age_rating": "Everyone",
+    "status": "published",
+    "published": "2026-10-02",
+    "updated": "2026-10-02",
+    "average_session_seconds": 90,
+    "plays": 16400,
+    "likes": 1260,
+    "favorites": 689,
+    "trending": 80,
+    "icon": "res://assets/icon.svg",
+    "thumbnail": "procedural://racer",
+    "preview": "procedural://racer",
+    "input": {
+      "usesTap": false,
+      "usesHold": false,
+      "usesDrag": true,
+      "usesSwipeUp": false,
+      "usesSwipeDown": false,
+      "usesSwipeLeft": true,
+      "usesSwipeRight": true,
+      "usesMultiTouch": false,
+      "usesTilt": false,
+      "usesVirtualJoystick": false,
+      "usesKeyboard": true
+    },
+    "versions": [
+      {
+        "version": "1.0.0",
+        "uploaded": "2026-10-02",
+        "release_notes": "The first edition.",
+        "live": true,
+        "scene": "res://games/racer.tscn"
+      }
+    ],
+    "package_bytes": 131072,
+    "initial_download_bytes": 131072
+  },
+  {
+    "id": "color_gate",
+    "name": "Chromatic",
+    "developer": "Forma Lab",
+    "developer_id": "forma",
+    "description": "Three colors. One perfect moment. Match the symbol before the next gate reaches you.",
+    "categories": [
+      "Arcade",
+      "One-Tap"
+    ],
+    "tags": [
+      "arcade",
+      "offline",
+      "original"
+    ],
+    "color": "e9a9ca",
+    "short_label": "GATES",
+    "scene": "res://games/color_gate.tscn",
+    "version": "1.0.0",
+    "minimum_platform": 1,
+    "orientation": "portrait",
+    "supports_resume": true,
+    "age_rating": "Everyone",
+    "status": "published",
+    "published": "2026-10-02",
+    "updated": "2026-10-02",
+    "average_session_seconds": 90,
+    "plays": 12800,
+    "likes": 980,
+    "favorites": 802,
+    "trending": 76,
+    "icon": "res://assets/icon.svg",
+    "thumbnail": "procedural://color_gate",
+    "preview": "procedural://color_gate",
+    "input": {
+      "usesTap": true,
+      "usesHold": false,
+      "usesDrag": false,
+      "usesSwipeUp": false,
+      "usesSwipeDown": false,
+      "usesSwipeLeft": false,
+      "usesSwipeRight": false,
+      "usesMultiTouch": false,
+      "usesTilt": false,
+      "usesVirtualJoystick": false,
+      "usesKeyboard": true
+    },
+    "versions": [
+      {
+        "version": "1.0.0",
+        "uploaded": "2026-10-02",
+        "release_notes": "The first edition.",
+        "live": true,
+        "scene": "res://games/color_gate.tscn"
+      }
+    ],
+    "package_bytes": 131072,
+    "initial_download_bytes": 131072
+  },
+  {
+    "id": "merge",
+    "name": "Soft Numbers",
+    "developer": "Mellow Works",
+    "developer_id": "mellow",
+    "description": "A quiet moment for a busy mind. Slide, combine, and find your way to 2048.",
+    "categories": [
+      "Puzzle",
+      "Casual"
+    ],
+    "tags": [
+      "puzzle",
+      "offline",
+      "original"
+    ],
+    "color": "e3cb89",
+    "short_label": "POINTS",
+    "scene": "res://games/merge.tscn",
+    "version": "1.0.0",
+    "minimum_platform": 1,
+    "orientation": "portrait",
+    "supports_resume": true,
+    "age_rating": "Everyone",
+    "status": "published",
+    "published": "2026-10-02",
+    "updated": "2026-10-02",
+    "average_session_seconds": 300,
+    "plays": 21100,
+    "likes": 1650,
+    "favorites": 915,
+    "trending": 72,
+    "icon": "res://assets/icon.svg",
+    "thumbnail": "procedural://merge",
+    "preview": "procedural://merge",
+    "input": {
+      "usesTap": false,
+      "usesHold": false,
+      "usesDrag": false,
+      "usesSwipeUp": true,
+      "usesSwipeDown": true,
+      "usesSwipeLeft": true,
+      "usesSwipeRight": true,
+      "usesMultiTouch": false,
+      "usesTilt": false,
+      "usesVirtualJoystick": false,
+      "usesKeyboard": true
+    },
+    "versions": [
+      {
+        "version": "1.0.0",
+        "uploaded": "2026-10-02",
+        "release_notes": "The first edition.",
+        "live": true,
+        "scene": "res://games/merge.tscn"
+      }
+    ],
+    "package_bytes": 131072,
+    "initial_download_bytes": 131072
+  }
+]

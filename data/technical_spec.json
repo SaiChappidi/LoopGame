@@ -1,0 +1,17 @@
+{
+  "spec_version": "1.1",
+  "sdk_version": 1,
+  "maximum_package_bytes": 15728640,
+  "maximum_initial_download_bytes": 2097152,
+  "maximum_save_bytes": 65536,
+  "maximum_initial_load_ms": 1000,
+  "maximum_warm_load_ms": 150,
+  "target_fps": 60,
+  "maximum_tick_p95_ms": 4,
+  "maximum_game_memory_bytes": 100663296,
+  "allowed_aspect_ratios": ["9:16", "9:19.5", "9:20", "3:4"],
+  "orientations": ["portrait"],
+  "supported_input_flags": ["usesTap", "usesHold", "usesDrag", "usesSwipeUp", "usesSwipeDown", "usesSwipeLeft", "usesSwipeRight", "usesKeyboard"],
+  "disallowed_source_tokens": ["OS.execute", "OS.create_process", "OS.shell_open", "HTTPRequest", "HTTPClient", "TCPServer", "StreamPeerTCP", "FileAccess.", "DirAccess.", "JavaScriptBridge", "load_resource_pack", "get_tree().root", "get_tree().quit"],
+  "required_methods": ["initialize_game", "start_game", "pause_game", "resume_game", "restart_game", "end_game", "save_state", "load_state", "destroy_game", "get_score", "get_game_metadata", "get_input_profile", "report_event"]
+}

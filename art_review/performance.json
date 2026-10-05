@@ -1,0 +1,55 @@
+{
+  "cap_fps": 60,
+  "failures": [],
+  "godot": "4.5.2-stable (official)",
+  "gpu": "NVIDIA GeForce RTX 5070",
+  "renderer": "OpenGL Compatibility",
+  "results": [
+    {
+      "game": "stack",
+      "max_draw_calls": 60.0,
+      "mean_ms": 16.6765416666667,
+      "p95_ms": 16.727
+    },
+    {
+      "game": "runner",
+      "max_draw_calls": 644.0,
+      "mean_ms": 16.675825,
+      "p95_ms": 16.716
+    },
+    {
+      "game": "crowd",
+      "max_draw_calls": 139.0,
+      "mean_ms": 16.6768916666667,
+      "p95_ms": 16.721
+    },
+    {
+      "game": "racer",
+      "max_draw_calls": 56.0,
+      "mean_ms": 16.6754666666667,
+      "p95_ms": 16.751
+    },
+    {
+      "game": "color_gate",
+      "max_draw_calls": 55.0,
+      "mean_ms": 16.6761416666667,
+      "p95_ms": 16.71
+    },
+    {
+      "game": "merge",
+      "max_draw_calls": 94.0,
+      "mean_ms": 16.6767333333333,
+      "p95_ms": 16.72
+    },
+    {
+      "game": "cell_odyssey",
+      "max_draw_calls": 172.0,
+      "mean_ms": 16.67725,
+      "p95_ms": 16.845
+    }
+  ],
+  "samples_per_game": 120,
+  "viewport": "(480.0, 900.0)",
+  "warmup_frames": 60,
+  "window": "(480, 900)"
+}

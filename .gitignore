@@ -1,0 +1,14 @@
+.godot/
+*.tmp
+tests/test-state.json*
+data/loop-v1.json
+builds/
+
+# Generated review logs and local test saves
+art_review/*.log
+art_review/*save*.json*
+art_review/*state*.json*
+export_credentials.cfg
+.env
+.env.*
+!.env.example
