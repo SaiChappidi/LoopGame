@@ -16,4 +16,4 @@ The default budgets are 15 MiB archive, 2 MiB initial download, 1000 ms template
 
 ## Local limits
 
-This is not a backend, malware scanner, rights reviewer, antivirus, protected admin system, or arbitrary-code sandbox. The package is never executed; author content selects a reviewed runtime template. User assets are validated and retained in ZIP storage but the current templates do not render them. Notifications are in-app local records; there is no email/push delivery. This boundary is intentional until production authentication, isolated execution and moderation services exist.
+This is not a backend, malware scanner, rights reviewer, antivirus, protected admin system, or arbitrary-code sandbox. The package is never executed; author content selects a reviewed runtime template. Arena Studio can author supported rules and render one credited PNG/WebP backdrop; other templates validate and retain package images without rendering them. Notifications are in-app local records; there is no email/push delivery. This boundary is intentional until production authentication, isolated execution and moderation services exist.

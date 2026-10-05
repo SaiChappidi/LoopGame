@@ -8,7 +8,7 @@ The local Creator Studio accepts `.zip` and `.loopgame` files. A `.loopgame` is 
 - `game.json`: a JSON object whose `template` matches `manifest.json`'s `runtimeTemplate`.
 - Optional `assets/*.png` or `assets/*.webp`: declared image files only. Each asset path in the manifest must exactly match a file in the package.
 
-The creator dashboard can produce an Arena Studio Cell Odyssey sample package with different rules from the runtime defaults. To include images, build the archive externally with the two JSON files and declared assets, then choose it in Creator Studio. Thumbnail, icon, and screenshot paths must appear in the asset inventory. The current built-in templates validate and preserve these images in the versioned package but do not yet render creator artwork in game/feed UI.
+Arena Studio in the developer dashboard builds a playable arena from editable world dimensions, player and CPU movement/size, nutrient density, victory target, round length and palette. Creators can also include one optional `assets/arena-background.png` or `.webp`. The trusted runtime loads this image as a subdued, world-sized backdrop beneath its legible grid and game pieces. Creator Studio asks for attribution, a license description and a rights confirmation; these values are kept beside the asset path in the immutable manifest. Artwork is limited to 6 MiB and is never executable. Other built-in templates accept validated artwork in a package but do not yet render it in gameplay.
 
 ## Arena Studio `game.json`
 

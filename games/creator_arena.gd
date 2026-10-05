@@ -10,6 +10,7 @@ const GOAL_KEYS=["target_radius","time_limit_seconds","win_text"]
 var config:Dictionary={}
 var random:=RandomNumberGenerator.new()
 var draw_clock:float=0.0
+var backdrop:Texture2D
 
 static func default_definition()->Dictionary:
 	return {"schemaVersion":1,"template":"loop_arena_v1","world":{"width":1800,"height":1800,"background":"101a25"},"player":{"name":"You","radius":18,"speed":250,"color":"63e6c5"},"pellets":{"count":100,"radius":4,"color":"c5f36b","mass":1},"opponents":{"count":8,"minimum_radius":9,"maximum_radius":25,"color":"f094a7","speed":145},"goal":{"target_radius":48,"time_limit_seconds":120,"win_text":"Arena champion"},"seed":8817}
@@ -74,8 +75,23 @@ func initialize_game(m:Dictionary)->void:
 	metadata=metadata.duplicate(true)
 	metadata.short_label="NUTRIENTS"
 	accent=Color.from_string(str(config.player.color),Color("63e6c5"))
+	_load_creator_art(str(m.get("package_path", "")))
 	if world:world.hide()
 	reset_state()
+
+func _load_creator_art(package_path:String)->void:
+	backdrop=null
+	if package_path.is_empty():return
+	var reader=ZIPReader.new()
+	if reader.open(package_path)!=OK:return
+	for file in reader.get_files():
+		if not file.begins_with("assets/arena-background."):continue
+		var image=Image.new()
+		var bytes=reader.read_file(file)
+		var error=image.load_png_from_buffer(bytes) if file.get_extension().to_lower()=="png" else image.load_webp_from_buffer(bytes)
+		if error==OK and not image.is_empty():backdrop=ImageTexture.create_from_image(image)
+		break
+	reader.close()
 
 func reset_state()->void:
 	if config.is_empty():config=default_definition()
@@ -177,6 +193,9 @@ func _draw()->void:
 	var origin=MiniGame.DESIGN*0.5-camera
 	var arena=Rect2(origin,Vector2(float(config.world.width),float(config.world.height)))
 	draw_rect(arena,bg.lightened(0.035))
+	if backdrop:
+		draw_texture_rect(backdrop,arena,false,Color(0.38,0.48,0.55,0.38))
+		draw_rect(arena,Color(bg.r,bg.g,bg.b,0.36))
 	for i in 38:
 		var p = Vector2(fposmod(i*73.7-camera.x*0.15,400),fposmod(i*127.3-camera.y*0.15,480))
 		draw_arc(p,3+i%5,0,TAU,20,Color(0.4,0.65,0.66,0.1),1,true)

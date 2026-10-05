@@ -4,6 +4,8 @@
 
 Only the current game runs; only current/previous/next are loaded. Resume is limited to the game just left. Small World is replaced by Cell Garden, a CPU cell-eating arena. Swipe right from the left edge for game details and local comments, or use Game info / I on desktop. See docs/FEED_AND_COMMENTS.md for behavior and verification.
 
+Creator Studio's Arena Workshop now lets developers tune a playable arena's world, player, rivals, nutrients, goals and palette. It can package an optional credited/licensed PNG or WebP backdrop and render it in gameplay. The local publishing and identity limits still apply.
+
 
 ## Visual edition · October 2026
 

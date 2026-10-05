@@ -480,6 +480,7 @@ func _runtime_metadata(game:Dictionary,v:Dictionary,game_config:Dictionary={})->
 	if saved_config.is_empty():saved_config=v.get("manifest",{}).get("experienceDefinition",{})
 	if saved_config.is_empty() and game.template=="loop_arena_v1":saved_config=CreatorArenaRuntime.default_definition()
 	template.experience_config=game_config.duplicate(true) if not game_config.is_empty() else saved_config.duplicate(true)
+	if not str(v.get("package_path", "")).is_empty():template.package_path=v.package_path
 	template.package_bytes=v.package_bytes
 	template.initial_download_bytes=v.manifest.get("initialDownloadBytes",v.package_bytes)
 	return template

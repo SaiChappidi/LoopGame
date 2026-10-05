@@ -2,7 +2,7 @@ class_name DeveloperPublishingUI
 extends RefCounted
 const D = preload("res://app/design.gd")
 const TEMPLATE_IDS = ["loop_arena_v1","stack","runner","crowd","racer","color_gate","merge"]
-const TEMPLATE_NAMES = ["Arena Studio · custom rules","Stack Studio","Skyline Sprint","Small World","Coastline","Chromatic","Soft Numbers"]
+const TEMPLATE_NAMES = ["Arena Studio · custom rules","Stack Studio","Skyline Sprint","Cell Garden","Coastline","Chromatic","Soft Numbers"]
 
 static func dashboard(app,query:String="",status:String="All") -> void:
 	var c=app._open_modal("Developer dashboard · Airlock")
@@ -162,7 +162,7 @@ static func version_detail(app,version_id:String)->void:
 	var c=app._open_modal("Version "+v.version+" · "+_state_label(v.state))
 	c.add_child(D.paragraph("Immutable package: %s\nSHA-256: %s\nRelease notes: %s\nVisibility: %s" % [version_id,v.sha256 if not v.sha256.is_empty() else "not uploaded",v.release_notes,v.game_metadata.visibility],13))
 	if v.state in ["Draft","ValidationFailed","ReviewRejected"]:
-		if v.metadata.runtimeTemplate=="loop_arena_v1":c.add_child(D.button("Build sample Cell Odyssey package and upload",func():build_arena_sample(app,version_id),true))
+		if v.metadata.runtimeTemplate=="loop_arena_v1":c.add_child(D.button("Open Arena Studio · design playable rules",func():arena_studio(app,version_id),true))
 		else:c.add_child(D.button("Build starter .loopgame package and upload",func():build_and_upload(app,version_id),true))
 		c.add_child(D.button("Choose existing .zip / .loopgame",func():choose_upload(app,version_id)))
 	if v.state=="Uploaded":c.add_child(D.button("Run Airlock",func():run_airlock(app,version_id),true))
@@ -196,20 +196,100 @@ static func build_and_upload(app,version_id:String)->void:
 	writer.close()
 	await upload_package(app,version_id,file_path)
 
-static func build_arena_sample(app,version_id:String)->void:
+static func arena_studio(app,version_id:String)->void:
 	var v=app.publishing.version(version_id)
 	if v.is_empty() or v.metadata.runtimeTemplate!="loop_arena_v1":return
-	if not v.metadata.assets.is_empty():app.toast("Package declared assets in a ZIP instead.");return
+	var seed_config=v.get("experience_config",v.get("manifest",{}).get("experienceDefinition",{}))
+	if seed_config.is_empty():seed_config=CreatorArenaRuntime.default_definition()
+	var c=app._open_modal("Arena Studio · gameplay workshop")
+	c.add_child(D.paragraph("Shape a playable world with the same bounded rules that run in LOOP. Your preview uses these exact settings. Choose a visual palette, tune movement and rival pressure, then build an immutable package.",13))
+	var world_width=_studio_spin(c,"World width",600,4000,seed_config.world.width,100)
+	var world_height=_studio_spin(c,"World height",600,4000,seed_config.world.height,100)
+	var player_name=LineEdit.new();player_name.text=seed_config.player.name;player_name.max_length=24;player_name.custom_minimum_size.y=40;c.add_child(D.label("Your cell name",13));c.add_child(player_name)
+	var player_speed=_studio_spin(c,"Player speed",80,500,seed_config.player.speed,10)
+	var player_radius=_studio_spin(c,"Starting cell radius",10,36,seed_config.player.radius,1)
+	var player_color=_studio_color(c,"Player color",seed_config.player.color)
+	var rival_count=_studio_spin(c,"CPU rivals",0,16,seed_config.opponents.count,1)
+	var rival_min=_studio_spin(c,"Smallest rival radius",6,24,seed_config.opponents.minimum_radius,1)
+	var rival_max=_studio_spin(c,"Largest rival radius",8,40,seed_config.opponents.maximum_radius,1)
+	var rival_speed=_studio_spin(c,"Rival speed",60,320,seed_config.opponents.speed,10)
+	var rival_color=_studio_color(c,"Rival color",seed_config.opponents.color)
+	var food_count=_studio_spin(c,"Nutrient count",10,200,seed_config.pellets.count,5)
+	var food_radius=_studio_spin(c,"Nutrient size",2,12,seed_config.pellets.radius,1)
+	var food_color=_studio_color(c,"Nutrient color",seed_config.pellets.color)
+	var background=_studio_color(c,"World color",seed_config.world.background)
+	var goal=_studio_spin(c,"Goal size",20,90,seed_config.goal.target_radius,2)
+	var duration=_studio_spin(c,"Round length (seconds)",30,300,seed_config.goal.time_limit_seconds,15)
+	var win_text=LineEdit.new();win_text.text=seed_config.goal.win_text;win_text.max_length=32;win_text.custom_minimum_size.y=40;c.add_child(D.label("Victory title",13));c.add_child(win_text)
+	var art=_existing_arena_art(app,v)
+	art.path=""
+	var art_status=D.paragraph("Optional custom arena backdrop · PNG or WebP, up to 6 MiB" if art.bytes.is_empty() else "Keeping current artwork: "+str(art.asset.path),12,D.MUTED);c.add_child(art_status)
+	var art_source=LineEdit.new();art_source.text=str(art.asset.get("source",v.game_metadata.get("developer_name","")));art_source.placeholder_text="Artist or source attribution";art_source.custom_minimum_size.y=40;c.add_child(D.label("Artwork credit",13));c.add_child(art_source)
+	var art_license=LineEdit.new();art_license.text=str(art.asset.get("license","Original work"));art_license.placeholder_text="Original work or license name";art_license.custom_minimum_size.y=40;c.add_child(D.label("Artwork license",13));c.add_child(art_license)
+	var art_rights=CheckBox.new();art_rights.text="I made this artwork or have permission to use it";art_rights.button_pressed=not art.bytes.is_empty();c.add_child(art_rights)
+	c.add_child(D.button("Remove backdrop",func():art.path="";art.bytes=PackedByteArray();art.extension="";art_status.text="No custom backdrop selected";art_rights.button_pressed=false))
+	c.add_child(D.button("Choose original or licensed backdrop art",func():
+		var picker=FileDialog.new();picker.file_mode=FileDialog.FILE_MODE_OPEN_FILE;picker.access=FileDialog.ACCESS_FILESYSTEM;picker.filters=PackedStringArray(["*.png, *.webp ; Arena backdrop artwork"]);picker.title="Choose artwork you created or have permission to use";app.add_child(picker)
+		picker.file_selected.connect(func(path):art.path=path;art.bytes=PackedByteArray();art.extension=path.get_extension().to_lower();art_rights.button_pressed=false;art_status.text="Backdrop selected: "+path.get_file();picker.queue_free())
+		picker.canceled.connect(func():picker.queue_free());picker.popup_centered_ratio(0.72)))
+	var status=D.paragraph("CPU and food density, movement, growth, colors and round limits all affect the played build.",12,D.MUTED);c.add_child(status)
+	c.add_child(D.button("Build this game and run Airlock",func():
+		var definition={"schemaVersion":1,"template":"loop_arena_v1","world":{"width":int(world_width.value),"height":int(world_height.value),"background":background.color.to_html(false).trim_prefix("#").to_lower()},"player":{"name":player_name.text.strip_edges(),"radius":int(player_radius.value),"speed":int(player_speed.value),"color":player_color.color.to_html(false).trim_prefix("#").to_lower()},"pellets":{"count":int(food_count.value),"radius":int(food_radius.value),"color":food_color.color.to_html(false).trim_prefix("#").to_lower(),"mass":1.0},"opponents":{"count":int(rival_count.value),"minimum_radius":int(rival_min.value),"maximum_radius":int(rival_max.value),"color":rival_color.color.to_html(false).trim_prefix("#").to_lower(),"speed":int(rival_speed.value)},"goal":{"target_radius":int(goal.value),"time_limit_seconds":int(duration.value),"win_text":win_text.text.strip_edges()},"seed":int(Time.get_unix_time_from_system())%2147483647}
+		var problems=CreatorArenaRuntime.validate_definition(definition)
+		if not problems.is_empty():status.text="Fix these settings: "+" ".join(problems);return
+		if not art.path.is_empty() and (not art_rights.button_pressed or art_source.text.strip_edges().is_empty() or art_license.text.strip_edges().is_empty()):status.text="Add the artwork credit and license, and confirm you have permission to use the image.";return
+		_build_arena_package(app,version_id,definition,art,art_source.text.strip_edges(),art_license.text.strip_edges()),true))
+
+static func _studio_spin(parent:VBoxContainer,title:String,minimum:int,maximum:int,value:Variant,step:int)->SpinBox:
+	parent.add_child(D.label(title,13))
+	var input=SpinBox.new();input.min_value=minimum;input.max_value=maximum;input.step=step;input.value=float(value);input.custom_minimum_size.y=40;parent.add_child(input)
+	return input
+
+static func _studio_color(parent:VBoxContainer,title:String,hex:String)->ColorPickerButton:
+	parent.add_child(D.label(title,13))
+	var input=ColorPickerButton.new();input.color=Color.from_string(str(hex),Color.WHITE);input.custom_minimum_size.y=40;parent.add_child(input)
+	return input
+
+static func _existing_arena_art(app,v:Dictionary)->Dictionary:
+	for version_key in v.game_metadata.get("versions",[]):
+		var previous=app.publishing.version(version_key)
+		if previous.is_empty() or previous.package_path.is_empty():continue
+		for asset in previous.metadata.get("assets",[]):
+			if not asset is Dictionary or not str(asset.get("path","")).begins_with("assets/arena-background."):continue
+			var reader=ZIPReader.new()
+			if reader.open(previous.package_path)!=OK:continue
+			var bytes=reader.read_file(str(asset.path))
+			reader.close()
+			if not bytes.is_empty():return {"bytes":bytes,"asset":asset.duplicate(true),"extension":str(asset.path).get_extension().to_lower(),"path":""}
+	return {"bytes":PackedByteArray(),"asset":{},"extension":"","path":""}
+
+static func _build_arena_package(app,version_id:String,definition:Dictionary,artwork_state:Dictionary,art_source:String="",art_license:String="")->void:
+	var v=app.publishing.version(version_id)
+	if v.is_empty() or v.metadata.runtimeTemplate!="loop_arena_v1":return
+	var artwork:PackedByteArray=artwork_state.get("bytes",PackedByteArray())
+	var art_path=str(artwork_state.get("path",""))
+	var extension=str(artwork_state.get("extension",""))
+	if not art_path.is_empty():
+		if art_path.get_extension().to_lower() not in ["png","webp"]:app.toast("Backdrop artwork must be PNG or WebP.");return
+		artwork=FileAccess.get_file_as_bytes(art_path)
+		if artwork.is_empty() or artwork.size()>6291456:app.toast("Artwork must be readable and no larger than 6 MiB.");return
+		extension=art_path.get_extension().to_lower()
+	var assets=[]
+	if not artwork.is_empty():assets=[{"path":"assets/arena-background."+extension,"source":art_source,"license":art_license}]
+	v.metadata.assets=assets.duplicate(true)
+	v.game_metadata.asset_inventory=assets.duplicate(true)
+	app.publishing._save()
 	var folder=app.store.path.get_base_dir().path_join("game-packages").path_join(v.game_id)
 	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(folder))
-	var path=ProjectSettings.globalize_path(folder.path_join(v.version+"-arena.sample.loopgame"))
+	var path=ProjectSettings.globalize_path(folder.path_join(v.version+"-arena.loopgame"))
 	if FileAccess.file_exists(path):app.toast("This sample already exists. Create a new version for another package.");return
-	var definition={"schemaVersion":1,"template":"loop_arena_v1","world":{"width":2200,"height":1800,"background":"111a2c"},"player":{"name":"Nova","radius":17,"speed":275,"color":"69e0bf"},"pellets":{"count":76,"radius":5,"color":"f7c969","mass":1.3},"opponents":{"count":7,"minimum_radius":10,"maximum_radius":28,"color":"ff758c","speed":158},"goal":{"target_radius":56,"time_limit_seconds":150,"win_text":"Nebula champion"},"seed":19423}
 	var manifest=v.metadata.duplicate(true);manifest.experienceDefinition=definition
 	var writer=ZIPPacker.new()
 	if writer.open(path)!=OK:app.toast("Could not write the sample package.");return
 	writer.start_file("manifest.json");writer.write_file(JSON.stringify(manifest).to_utf8_buffer());writer.close_file()
-	writer.start_file("game.json");writer.write_file(JSON.stringify(definition).to_utf8_buffer());writer.close_file();writer.close()
+	writer.start_file("game.json");writer.write_file(JSON.stringify(definition).to_utf8_buffer());writer.close_file()
+	if not artwork.is_empty():writer.start_file(assets[0].path);writer.write_file(artwork);writer.close_file()
+	writer.close()
 	await upload_package(app,version_id,path)
 
 static func choose_upload(app,version_id:String)->void:
