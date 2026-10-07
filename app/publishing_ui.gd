@@ -1,8 +1,8 @@
 class_name DeveloperPublishingUI
 extends RefCounted
 const D = preload("res://app/design.gd")
-const TEMPLATE_IDS = ["loop_arena_v1","stack","runner","crowd","racer","color_gate","merge"]
-const TEMPLATE_NAMES = ["Arena Studio · custom rules","Stack Studio","Skyline Sprint","Cell Garden","Coastline","Chromatic","Soft Numbers"]
+const TEMPLATE_IDS = ["loop_arena_v1","stack","runner","crowd","racer","merge","prism_stack","lantern_trail"]
+const TEMPLATE_NAMES = ["Arena Studio · custom rules","Stack Studio","Skyline Sprint","Cell Garden","Coastline","Soft Numbers","Prism Stack","Lantern Trail"]
 
 static func dashboard(app,query:String="",status:String="All") -> void:
 	var c=app._open_modal("Developer dashboard · Airlock")

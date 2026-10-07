@@ -45,7 +45,7 @@ func click(caption: String, node: Node = null) -> void:
 func run() -> void:
 	app = load("res://app/main.tscn").instantiate()
 	root.add_child(app)
-	app.store.data.tutorial_seen = ["stack","runner","crowd","racer","color_gate","merge"]
+	app.store.data.tutorial_seen = ["stack","runner","crowd","racer","merge","prism_stack","lantern_trail"]
 	await process_frame
 	app.store.data.nav = LocalStore.DEFAULT_NAV.duplicate(true)
 	app.navigation.config = app.store.data.nav
@@ -125,14 +125,14 @@ func run() -> void:
 	var right_zone = app.navigation.zone
 	check(right_zone.position.x > app.navigation.gameplay.position.x,"right-side zone applied in actual UI")
 	swipe(right_zone.get_center(),Vector2(0,55))
-	check(app.feed.current.metadata.id == "color_gate","relocated zone navigates previous")
+	check(app.feed.current.metadata.id == "racer","relocated zone navigates previous")
 	app.store.data.nav.mode = "Buttons"
 	app._layout()
 	check(not app.zone_panel.visible,"buttons mode hides zone visual")
 	click("↓",app.chrome)
 	check(app.feed.current.metadata.id == "merge","Next UI button works")
 	click("↑",app.chrome)
-	check(app.feed.current.metadata.id == "color_gate","Previous UI button works")
+	check(app.feed.current.metadata.id == "racer","Previous UI button works")
 	app.store.data.nav.mode = "Swipe Zone + Buttons"
 	app._layout()
 	var safe = app.feed.area
@@ -176,7 +176,7 @@ func run() -> void:
 	await process_frame
 	click("Save new listing version",app.modal)
 	check(app.store.data.drafts.size() > 0 and app.store.data.drafts.back().visibility=="Draft","legacy listing controls cannot publish around the Airlock")
-	check(app.store.data.developer_projects.is_empty() and app.store.catalog.size()==6,"only the new audited dashboard can create a developer catalog entry")
+	check(app.store.data.developer_projects.is_empty() and app.store.catalog.size()==7,"only the new audited dashboard can create a developer catalog entry")
 	app._close_modal()
 	app.feed.checkpoint()
 	var saved = LocalStore.new()

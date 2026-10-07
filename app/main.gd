@@ -484,6 +484,11 @@ func _input(event: InputEvent) -> void:
 	elif event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
 		handled = navigation.press(-1,event.position,now) if event.pressed else navigation.release(-1,event.position,now)
 	elif event is InputEventMouseMotion and event.button_mask & MOUSE_BUTTON_MASK_LEFT: handled = navigation.drag(-1,event.position)
+	elif event is InputEventKey and event.keycode in [KEY_LEFT,KEY_RIGHT] and _active_game() and _active_game().metadata.get("id","")=="lantern_trail":
+		var direction="left" if event.keycode==KEY_LEFT else "right"
+		_active_game().receive_input(direction+"_down" if event.pressed else direction+"_up",Vector2(200,240))
+		if event.pressed:_playing()
+		handled=true
 	elif event is InputEventKey and event.pressed and not event.echo:
 		if event.keycode in [KEY_ESCAPE,KEY_I]:
 			_game_information()
@@ -791,7 +796,7 @@ func _toggle(content: VBoxContainer, title: String, object: Dictionary, key: Str
 
 func _confirm_clear() -> void:
 	var c = _open_modal("Clear game sessions?")
-	c.add_child(D.paragraph("This restarts all six games. Your high scores, saved games, profile, and preferences stay intact."))
+	c.add_child(D.paragraph("This restarts all seven games. Your high scores, saved games, profile, and preferences stay intact."))
 	c.add_child(D.button("Clear sessions",func():
 		feed.suspend()
 		for game in feed.cache.values(): game.destroy_game()

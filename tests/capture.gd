@@ -4,12 +4,12 @@ func _initialize() -> void: call_deferred("run")
 func run() -> void:
 	var app = load("res://app/main.tscn").instantiate()
 	root.add_child(app)
-	app.store.data.tutorial_seen = ["stack","runner","crowd","racer","color_gate","merge"]
+	app.store.data.tutorial_seen = app.feed.ids.duplicate()
 	await process_frame
 	app.store.data.nav = LocalStore.DEFAULT_NAV.duplicate(true)
 	app.navigation.config = app.store.data.nav
 	app._layout()
-	for id in ["stack","runner","crowd","racer","color_gate","merge"]:
+	for id in app.feed.ids.duplicate():
 		app._launch(id)
 		app.feed.current.restart_game()
 		if id == "stack":

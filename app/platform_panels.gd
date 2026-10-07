@@ -88,8 +88,9 @@ static func tutorial(app, metadata: Dictionary) -> void:
 		"stack":["Tap to place the moving block","Perfect overlap keeps the full width"],
 		"crowd":["Drag or use arrows to move your cell","Eat nutrients and smaller CPU cells","Avoid larger cells · reach size 58 to win"],
 		"racer":["Drag left/right to steer","Collect B for a protected speed boost"],
-		"color_gate":["Tap to cycle I → II → III","Match the approaching gate's symbol"],
 		"merge":["Swipe to slide the tiles","Match equal numbers to grow your score"],
+		"prism_stack":["← →  Move the piece · ↓ soft drop","Tap to rotate · swipe ↑ or press ↑ to hard drop","Tap HOLD at the left of the board to save a shape"],
+		"lantern_trail":["Hold ← / → or the lower arrows to run; release to stop","Tap the right control or press ↑ to jump","Gather coins, stomp moths, touch flags to set checkpoints","Clear all three chapters without losing every heart"],
 		"creator_arena":["Drag or use arrow keys to move","Eat smaller cells; avoid larger rivals","Reach the target size before time runs out"]
 	}
 	var c = app._open_modal("A few seconds to get good")

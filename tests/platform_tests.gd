@@ -44,7 +44,7 @@ func run() -> void:
 	check(play!=null,"tutorial offers a clear start button")
 	if play: play.pressed.emit()
 	check(app.feed.current.running and "stack" in app.store.data.tutorial_seen,"tutorial acknowledgment persists and resumes")
-	app.store.data.tutorial_seen = ["stack","runner","crowd","racer","color_gate","merge"]
+	app.store.data.tutorial_seen = ["stack","runner","crowd","racer","merge","prism_stack","lantern_trail"]
 	app.feed.elapsed = 12
 	app.feed.checkpoint()
 	var seconds = app.store.progression.state.daily.seconds

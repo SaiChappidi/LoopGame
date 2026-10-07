@@ -251,65 +251,6 @@
     "initial_download_bytes": 131072
   },
   {
-    "id": "color_gate",
-    "name": "Chromatic",
-    "developer": "Forma Lab",
-    "developer_id": "forma",
-    "description": "Three colors. One perfect moment. Match the symbol before the next gate reaches you.",
-    "categories": [
-      "Arcade",
-      "One-Tap"
-    ],
-    "tags": [
-      "arcade",
-      "offline",
-      "original"
-    ],
-    "color": "e9a9ca",
-    "short_label": "GATES",
-    "scene": "res://games/color_gate.tscn",
-    "version": "1.0.0",
-    "minimum_platform": 1,
-    "orientation": "portrait",
-    "supports_resume": true,
-    "age_rating": "Everyone",
-    "status": "published",
-    "published": "2026-10-02",
-    "updated": "2026-10-02",
-    "average_session_seconds": 90,
-    "plays": 12800,
-    "likes": 980,
-    "favorites": 802,
-    "trending": 76,
-    "icon": "res://assets/icon.svg",
-    "thumbnail": "procedural://color_gate",
-    "preview": "procedural://color_gate",
-    "input": {
-      "usesTap": true,
-      "usesHold": false,
-      "usesDrag": false,
-      "usesSwipeUp": false,
-      "usesSwipeDown": false,
-      "usesSwipeLeft": false,
-      "usesSwipeRight": false,
-      "usesMultiTouch": false,
-      "usesTilt": false,
-      "usesVirtualJoystick": false,
-      "usesKeyboard": true
-    },
-    "versions": [
-      {
-        "version": "1.0.0",
-        "uploaded": "2026-10-02",
-        "release_notes": "The first edition.",
-        "live": true,
-        "scene": "res://games/color_gate.tscn"
-      }
-    ],
-    "package_bytes": 131072,
-    "initial_download_bytes": 131072
-  },
-  {
     "id": "merge",
     "name": "Soft Numbers",
     "developer": "Mellow Works",
@@ -367,5 +308,98 @@
     ],
     "package_bytes": 131072,
     "initial_download_bytes": 131072
-  }
+  },
+  {
+    "id": "prism_stack",
+    "name": "Prism Stack",
+    "developer": "LOOP Atelier",
+    "developer_id": "loop_atelier",
+    "description": "A luminous falling-block puzzle. Rotate, hold and place each shape with care; clear lines to climb through the prism tiers.",
+    "categories": ["Puzzle", "Arcade"],
+    "tags": ["falling blocks", "puzzle", "offline", "original"],
+    "color": "72d9e4",
+    "short_label": "POINTS",
+    "scene": "res://games/prism_stack.tscn",
+    "version": "1.0.0",
+    "minimum_platform": 1,
+    "orientation": "portrait",
+    "supports_resume": true,
+    "age_rating": "Everyone",
+    "status": "published",
+    "published": "2026-10-07",
+    "updated": "2026-10-07",
+    "average_session_seconds": 120,
+    "plays": 0,
+    "likes": 0,
+    "favorites": 0,
+    "trending": 0,
+    "icon": "res://assets/icon.svg",
+    "thumbnail": "procedural://prism_stack",
+    "preview": "procedural://prism_stack",
+    "input": {"usesTap": true,"usesHold": false,"usesDrag": false,"usesSwipeUp": true,"usesSwipeDown": true,"usesSwipeLeft": true,"usesSwipeRight": true,"usesMultiTouch": false,"usesTilt": false,"usesVirtualJoystick": false,"usesKeyboard": true},
+    "versions": [{"version":"1.0.0","uploaded":"2026-10-07","release_notes":"Original falling-block puzzle with hold, ghost, next queue, and line scoring.","live":true,"scene":"res://games/prism_stack.tscn"}],
+    "package_bytes": 131072,
+    "initial_download_bytes": 131072
+  },
+{
+  "id": "lantern_trail",
+  "name": "Lantern Trail",
+  "developer": "Little Current",
+  "developer_id": "little_current",
+  "description": "Run, leap and gather the lost lantern coins across Sunmeadow, the glowing orchard and the Saltwind Coast. Three hand-built chapters, one little adventurer.",
+  "categories": [
+    "Platformer",
+    "Adventure"
+  ],
+  "tags": [
+    "platformer",
+    "adventure",
+    "three levels",
+    "offline",
+    "original"
+  ],
+  "color": "ffc66d",
+  "short_label": "COINS",
+  "scene": "res://games/lantern_trail.tscn",
+  "version": "1.0.0",
+  "minimum_platform": 1,
+  "orientation": "portrait",
+  "supports_resume": true,
+  "age_rating": "Everyone",
+  "status": "published",
+  "published": "2026-10-07",
+  "updated": "2026-10-07",
+  "average_session_seconds": 240,
+  "plays": 0,
+  "likes": 0,
+  "favorites": 0,
+  "trending": 0,
+  "icon": "res://assets/icon.svg",
+  "thumbnail": "procedural://lantern_trail",
+  "preview": "procedural://lantern_trail",
+  "input": {
+    "usesTap": true,
+    "usesHold": true,
+    "usesDrag": false,
+    "usesSwipeUp": true,
+    "usesSwipeDown": true,
+    "usesSwipeLeft": false,
+    "usesSwipeRight": false,
+    "usesMultiTouch": false,
+    "usesTilt": false,
+    "usesVirtualJoystick": false,
+    "usesKeyboard": true
+  },
+  "versions": [
+    {
+      "version": "1.0.0",
+      "uploaded": "2026-10-07",
+      "release_notes": "Original three-chapter storybook platform adventure with checkpoints and touch controls.",
+      "live": true,
+      "scene": "res://games/lantern_trail.tscn"
+    }
+  ],
+  "package_bytes": 131072,
+  "initial_download_bytes": 131072
+}
 ]

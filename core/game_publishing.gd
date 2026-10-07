@@ -1,7 +1,7 @@
 class_name GamePublishingPipeline
 extends RefCounted
 ## Local airlock for declarative submissions. No uploaded code is executed.
-const RUNTIME_TEMPLATES = ["stack","runner","crowd","racer","color_gate","merge","loop_arena_v1"]
+const RUNTIME_TEMPLATES = ["stack","runner","crowd","racer","merge","prism_stack","lantern_trail","loop_arena_v1"]
 const ALLOWED_CAPABILITIES = ["local_storage","leaderboard","achievements","analytics","share_ui"]
 const TRANSITIONS = {
 	"Draft":["Uploading","Archived"],"Uploading":["Uploaded","Draft"],"Uploaded":["AirlockQueued","Draft","Archived"],

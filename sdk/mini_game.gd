@@ -142,7 +142,7 @@ func hud(instruction: String) -> void:
 	text_at(instruction,Vector2(instruction_x,size.y-126),Color("d8e2df"),11)
 	if state.get("over",false):
 		draw_rect(Rect2(Vector2.ZERO,size),Color(0.02,0.03,0.05,0.88))
-		var titles = {"stack":"A STUDY IN BALANCE", "runner":"END OF THE LINE", "crowd":"A NEW GENERATION", "racer":"UNTIL THE NEXT COAST", "color_gate":"OUT OF PHASE", "merge":"ROOM TO BEGIN AGAIN", "cell_odyssey":"A NEW GENERATION"}
+		var titles = {"stack":"A STUDY IN BALANCE", "runner":"END OF THE LINE", "crowd":"A NEW GENERATION", "racer":"UNTIL THE NEXT COAST", "merge":"ROOM TO BEGIN AGAIN", "cell_odyssey":"A NEW GENERATION"}
 		round_rect(Rect2(size*0.5-Vector2(185,112),Vector2(370,276)),Color("182735"),22)
 		draw_line(size*0.5+Vector2(-155,-82),size*0.5+Vector2(155,-82),accent,2,true)
 		centered(metadata.get("name","LOOP").to_upper(),size*0.5+Vector2(0,-57),accent,11)

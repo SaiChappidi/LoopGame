@@ -1,6 +1,6 @@
 # LOOP declarative game package · v1
 
-The local Creator Studio accepts `.zip` and `.loopgame` files. A `.loopgame` is a ZIP archive with exactly the same format. The package is data-only: LOOP never executes scripts, native libraries, executables, shaders, HTML, or uploaded scenes. The selected reviewed runtime supplies gameplay code. `loop_arena_v1` is Arena Studio: it creates a fresh, configurable solo cell-arena game rather than selecting one of the six sample-game scenes. It is the first creator runtime ABI; arbitrary game genres still need new platform runtimes.
+The local Creator Studio accepts `.zip` and `.loopgame` files. A `.loopgame` is a ZIP archive with exactly the same format. The package is data-only: LOOP never executes scripts, native libraries, executables, shaders, HTML, or uploaded scenes. The selected reviewed runtime supplies gameplay code. `loop_arena_v1` is Arena Studio: it creates a fresh, configurable solo cell-arena game rather than selecting one of the seven sample-game scenes. It is the first creator runtime ABI; arbitrary game genres still need new platform runtimes.
 
 ## Required files
 
@@ -18,6 +18,6 @@ Arena Studio in the developer dashboard builds a playable arena from editable wo
 
 The default maximum archive is 15 MiB; expanded content is limited to 20 MiB, with at most 34 entries. Each declared asset is limited to 6 MiB; manifest/config JSON to 256 KiB. The parser rejects encrypted or multi-disk ZIPs, ZIP64, traversal/absolute paths, symlink/device entries, unsupported compression, suspicious expansion ratios, undeclared paths, unrecognized image signatures, missing files, identity mismatches, and unsupported capability/input declarations. SHA-256 is stored with the immutable version and checked again on Airlock entry.
 
-Allowed templates are `loop_arena_v1` (Arena Studio), `stack`, `runner`, `crowd`, `racer`, `color_gate`, and `merge`. Supported capability declarations are `local_storage`, `leaderboard`, `achievements`, `analytics`, and `share_ui`; declarations do not grant arbitrary operating-system APIs. Only portrait orientation and the client-supported controls are accepted. The Airlock checks metadata and the selected trusted template, not uploaded executable code.
+Allowed templates are `loop_arena_v1` (Arena Studio), `stack`, `runner`, `crowd`, `racer`, `merge`, `prism_stack`, and `lantern_trail`. Supported capability declarations are `local_storage`, `leaderboard`, `achievements`, `analytics`, and `share_ui`; declarations do not grant arbitrary operating-system APIs. Only portrait orientation and the client-supported controls are accepted. The Airlock checks metadata and the selected trusted template, not uploaded executable code.
 
 For production, move validation and storage to a server, authenticate ownership and reviewer roles, isolate all execution, scan assets/content, sign manifests, and treat local records as untrusted. This desktop mock is not a security boundary for third-party code.

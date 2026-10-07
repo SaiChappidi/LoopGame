@@ -58,7 +58,7 @@ usesSwipeUp, usesSwipeDown, usesSwipeLeft, usesSwipeRight,
 usesMultiTouch, usesTilt, usesVirtualJoystick, usesKeyboard
 ```
 
-SDK v1 has simultaneous pointer ownership in the router but action callbacks do not expose pointer IDs. None of the six sample games declares multi-touch. A future multi-touch/tilt/joystick game must extend the SDK callback contract first; changing a metadata flag alone does not add those capabilities.
+SDK v1 has simultaneous pointer ownership in the router but action callbacks do not expose pointer IDs. None of the seven sample games declares multi-touch. A future multi-touch/tilt/joystick game must extend the SDK callback contract first; changing a metadata flag alone does not add those capabilities.
 
 ## Safe area
 

@@ -8,6 +8,7 @@ builds/
 art_review/*.log
 art_review/*save*.json*
 art_review/*state*.json*
+art_review/*-gameplay.png
 export_credentials.cfg
 .env
 .env.*

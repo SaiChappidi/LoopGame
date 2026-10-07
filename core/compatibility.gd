@@ -19,7 +19,7 @@ static func inspect(metadata: Dictionary, exercise: bool = true) -> Dictionary:
 	for flag in metadata.get("input",{}):
 		if metadata.input[flag] == true and not flag in limits.supported_input_flags: errors.append("Unsupported control: " + flag)
 	var script_path = str(metadata.get("scene","")).replace(".tscn",".gd")
-	var trusted_scenes = ["stack","runner","crowd","racer","color_gate","merge"].map(func(id): return "res://games/"+id+".tscn")
+	var trusted_scenes = ["stack","runner","crowd","racer","merge","prism_stack","lantern_trail"].map(func(id): return "res://games/"+id+".tscn")
 	trusted_scenes.append("res://games/creator_arena.tscn")
 	if not metadata.get("scene","") in trusted_scenes or not ResourceLoader.exists(str(metadata.get("scene",""))):
 		errors.append("Only registered bundled packages can be executed")

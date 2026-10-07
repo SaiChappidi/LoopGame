@@ -9,10 +9,10 @@ Creator Studio's Arena Workshop now lets developers tune a playable arena's worl
 
 ## Visual edition · October 2026
 
-The updated source is this project. Run ../Loop-Visual-Edition/Play LOOP.cmd for the packaged Windows build. See art_review/index.html for matched gameplay comparisons, art_review/VERIFICATION.md for checks and limits, and ASSET_CREDITS.md for original artwork provenance. All six catalog games and the creator arena runtime received a visual pass.
+The updated source is this project. Run ../Loop-Visual-Edition/Play LOOP.cmd for the packaged Windows build. See art_review/index.html for matched gameplay comparisons, art_review/VERIFICATION.md for checks and limits, and ASSET_CREDITS.md for artwork provenance. All seven catalog games and the creator arena runtime are included.
 
 
-A native, local-first mini-game platform built with **Godot 4.5.2 Standard (GDScript)**. Five original 2D games and Skyline Sprint, a procedural 3D runner, share a modular SDK, bounded feed cache, independent gesture routing and persistent sessions. No external plugins, paid assets, account or backend are needed.
+A native, local-first mini-game platform built with **Godot 4.5.2 Standard (GDScript)**. Six original 2D games and Skyline Sprint, a procedural 3D runner, share a modular SDK, bounded feed cache, independent gesture routing and persistent sessions. Lantern Trail's three hand-painted storybook backgrounds were generated for LOOP; the remaining game visuals are drawn in the project. No paid assets, account or backend are needed.
 
 ## Run
 
@@ -45,10 +45,11 @@ On a phone, use a matching Godot Android/iOS export template and the relevant pl
 
 - **Stack Studio:** tap or Space to place a block. Overlap keeps the tower alive; perfect placement preserves its width.
 - **Skyline Sprint:** a 3D night-market runner. Swipe left/right for lanes, up to vault barriers, down to slide under gates. Dodge trams, collect coins, magnets and shields. Desktop arrows also work.
-- **Small World:** drag, hold a target, or click to move your crowd. Recruit neutrals, avoid larger enemies, and outgrow smaller enemies before the timer runs out.
+- **Cell Garden:** drag or use arrows to steer your cell, collect nutrients, grow, and avoid larger CPU rivals.
 - **Coastline:** drag to steer, or use left/right. Collect gold B boosts for speed and temporary collision protection.
-- **Chromatic:** tap or Space to cycle I → II → III. Match the symbol on the approaching gate; color is a second cue.
 - **Soft Numbers:** swipe or use arrows to merge identical tiles. A tile merges only once per move.
+- **Prism Stack:** rotate, hold and place falling shapes. Swipe to move/drop or use the keyboard.
+- **Lantern Trail:** hold the left/right arrows to walk; release to stop. Jump with ↑ or the right touch control across three chapters.
 
 At game over, tap to restart. Pausing and leaving preserve the session. A short first-play tutorial pauses a new game until dismissed; subsequent visits resume directly.
 
@@ -69,7 +70,7 @@ The strip shows direction and threshold progress, and short swipes cancel. Trans
 
 ## What's implemented
 
-- Six genuinely playable games, each in its own registered scene and script.
+- Seven genuinely playable games, each in its own registered scene and script.
 - Common SDK lifecycle, per-game input profiles, safe gameplay rectangle, score/event reporting, restart and JSON snapshots.
 - Current + previous + next + one additional upcoming game cache, threaded adjacent resource preload, eviction, five-second checkpoints, background pause, and restoration on revisit.
 - Persistent navigation preferences, settings, likes, favorites, follows, recent games, profile, achievements, scores, and sessions.
@@ -83,7 +84,7 @@ The strip shows direction and threshold progress, and short swipes cancel. Trans
 
 ## Honest scope
 
-This is a working **native MVP**, not a production user-generated-content service. The six games use lightweight procedural 2D art, including an isometric stacking game. There is no 3D engine content or multiplayer implementation. There are no fake extra games; every catalog entry can be played.
+This is a working **native MVP**, not a production user-generated-content service. All seven catalog entries launch as playable games; Skyline Sprint uses the existing 3D engine, and the other games are 2D. There is no online multiplayer. There are no fake extra games.
 
 Community engagement numbers and leaderboard opponents are clearly labeled seed/demo data. Profiles, follows, publication, reports, and analytics remain on the current device. `loop://game/<id>` links are copyable identifiers; operating-system deep-link registration and a public share-link resolver are future integrations.
 
@@ -104,7 +105,7 @@ core/store.gd        JSON persistence, catalog, recommendations, analytics
 core/service_contracts.gd  Explicit future service seams
 sdk/mini_game.gd     Game lifecycle, snapshots, events, logical drawing helpers
 sdk/template.gd      Copyable minimal game implementation
-games/               Six independent Control scenes and game scripts
+games/               Seven independent Control scenes and game scripts
 data/games.json      Catalog metadata, input profiles, package references
 assets/              Original LOOP icon
 tests/               Navigation, mechanics, UI flow, restart, rendering checks

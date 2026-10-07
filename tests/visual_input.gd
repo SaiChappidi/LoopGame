@@ -38,8 +38,6 @@ func run():
 			"racer":
 				tap(origin+Vector2(300,360)*scale_value)
 				check(absf(g.state.x-300)<1,"racer: pointer aligns with projected player collision line")
-			"color_gate":
-				key(KEY_SPACE);check(g.state.color==1,"chromatic: routed color cycle key")
 			"merge":
 				g.state.tiles=[2,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
 				key(KEY_LEFT);check(g.state.tiles[0]==4 and g.state.score==4,"merge: animation preserves immediate logical result")

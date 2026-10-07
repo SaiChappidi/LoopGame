@@ -37,7 +37,6 @@ func run():
 			elif id=="crowd" and n%20==0: g.receive_input("drag",Vector2(180+n,200))
 			elif id=="racer" and n%30==0: g.receive_input("left" if n%60==0 else "right")
 			elif id=="runner" and n%30==0: g.receive_input("up")
-			elif id=="color_gate" and n%50==0: g.receive_input("tap")
 			elif id=="cell_odyssey" and n%30==0: g.receive_input("right")
 			g.tick(0.016)
 		g.queue_redraw()
@@ -62,7 +61,6 @@ func run():
 			"racer":
 				g.state.cars=[{"x":100,"y":260.0,"boost":false},{"x":300,"y":350.0,"boost":false},{"x":200,"y":140.0,"boost":true}]
 			"crowd": g.state.score=12
-			"color_gate": g.state.gate_y=320.0
 			"merge": g.state.tiles=[2,4,8,16,4,8,32,64,8,32,128,256,0,0,512,1024]
 			"cell_odyssey":
 				g.state.bots[0].x=g.state.player_x+70
