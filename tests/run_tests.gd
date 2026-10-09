@@ -19,7 +19,7 @@ func run() -> void:
 	var test_path = "res://tests/test-state.json"
 	if FileAccess.file_exists(test_path): DirAccess.remove_absolute(test_path)
 	var store = LocalStore.new(test_path)
-	check(store.catalog.size() == 7,"seven valid registered games")
+	check(store.catalog.size() == 10,"ten valid registered games")
 	check(not store.validate_metadata({"id":"bad"}),"invalid metadata rejected")
 	var invalid = store.catalog[0].duplicate(true)
 	invalid.minimum_platform = 999
@@ -150,13 +150,13 @@ func run() -> void:
 	restored = LocalStore.new(test_path)
 	check(restored.data.sessions.has("crowd") and restored.data.scores.has("crowd"),"sessions and scores survive disk round trip")
 	var ids = store.recommendations()
-	check(ids.size() == 7 and ids.duplicate().size() == 7,"recommendation feed includes seven games")
+	check(ids.size() == 10 and ids.duplicate().size() == 10,"recommendation feed includes ten games")
 	for id in ids: check(ids.count(id)==1,"no repeated game in feed: " + id)
 	for id in ids: feed.launch(id)
 	check(feed.cache.size() <= 3,"distant games are unloaded; cache bounded to three")
 	var draft = {"title":"My Stack Remix","description":"A local test game.","game_id":"stack","visibility":"Published locally","versions":[{"number":1}]}
 	store.save_draft(-1,draft)
-	check(store.catalog.size() == 7 and store.game(draft.id).is_empty() and draft.visibility=="Draft","a listing draft cannot bypass the developer Airlock")
+	check(store.catalog.size() == 10 and store.game(draft.id).is_empty() and draft.visibility=="Draft","a listing draft cannot bypass the developer Airlock")
 	feed.sync_catalog()
 	check(not store.available(draft.id) and not draft.id in feed.ids,"unvalidated draft is not discoverable or playable")
 	feed.suspend()

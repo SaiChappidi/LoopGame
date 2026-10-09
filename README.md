@@ -1,6 +1,10 @@
 # LOOP — One more game
 
-## Latest update: focused feed and Cell Garden
+## Latest update: original rhythm games
+
+Pulse Run, Cloudroll and Keylight add three new rhythm-driven games with bespoke gameplay, artwork and original synthesized soundtracks. All three have touch and desktop controls, resume-safe music, and a Game music setting.
+
+## Earlier update: focused feed and Cell Garden
 
 Only the current game runs; only current/previous/next are loaded. Resume is limited to the game just left. Small World is replaced by Cell Garden, a CPU cell-eating arena. Swipe right from the left edge for game details and local comments, or use Game info / I on desktop. See docs/FEED_AND_COMMENTS.md for behavior and verification.
 
@@ -9,14 +13,14 @@ Creator Studio's Arena Workshop now lets developers tune a playable arena's worl
 
 ## Visual edition · October 2026
 
-The updated source is this project. Run ../Loop-Visual-Edition/Play LOOP.cmd for the packaged Windows build. See art_review/index.html for matched gameplay comparisons, art_review/VERIFICATION.md for checks and limits, and ASSET_CREDITS.md for artwork provenance. All seven catalog games and the creator arena runtime are included.
+The updated source is this project. Run ../Loop-Visual-Edition/Play LOOP.cmd for the packaged Windows build. See art_review/index.html for matched gameplay comparisons, art_review/VERIFICATION.md for checks and limits, and ASSET_CREDITS.md for artwork provenance. All ten catalog games and the creator arena runtime are included.
 
 
-A native, local-first mini-game platform built with **Godot 4.5.2 Standard (GDScript)**. Six original 2D games and Skyline Sprint, a procedural 3D runner, share a modular SDK, bounded feed cache, independent gesture routing and persistent sessions. Lantern Trail's three hand-painted storybook backgrounds were generated for LOOP; the remaining game visuals are drawn in the project. No paid assets, account or backend are needed.
+A native, local-first mini-game platform built with **Godot 4.5.2 Standard (GDScript)**. Nine original 2D games and Skyline Sprint, a procedural 3D runner, share a modular SDK, bounded feed cache, independent gesture routing and persistent sessions. Three rhythm games include original synthesized soundtracks generated from the included source script. Lantern Trail's three hand-painted storybook backgrounds were generated for LOOP; the remaining game visuals are drawn in the project. No paid assets, account or backend are needed.
 
 ## Run
 
-**Windows, no installation:** extract `Loop-Platform-Windows.zip` and double-click **Play Skyline Sprint.cmd** for the new runner, or **Play LOOP.cmd** for the full platform. Keep `bin` and `Loop.pck` beside the launchers. Saves and logs appear in `data`. The bundled official Godot executable is a development runtime, not a size-optimized mobile release.
+**Test the current source:** open this folder's `project.godot` in Godot 4.5.2 and press **F5**. The sibling packaged Windows builds are older exports and need to be re-exported to include these new games and soundtracks. Saves and logs appear in `data`. The bundled official Godot executable is a development runtime, not a size-optimized mobile release.
 
 ## Platform edition · 0.3
 
@@ -70,7 +74,7 @@ The strip shows direction and threshold progress, and short swipes cancel. Trans
 
 ## What's implemented
 
-- Seven genuinely playable games, each in its own registered scene and script.
+- Ten genuinely playable games, each in its own registered scene and script.
 - Common SDK lifecycle, per-game input profiles, safe gameplay rectangle, score/event reporting, restart and JSON snapshots.
 - Current + previous + next + one additional upcoming game cache, threaded adjacent resource preload, eviction, five-second checkpoints, background pause, and restoration on revisit.
 - Persistent navigation preferences, settings, likes, favorites, follows, recent games, profile, achievements, scores, and sessions.
@@ -84,7 +88,7 @@ The strip shows direction and threshold progress, and short swipes cancel. Trans
 
 ## Honest scope
 
-This is a working **native MVP**, not a production user-generated-content service. All seven catalog entries launch as playable games; Skyline Sprint uses the existing 3D engine, and the other games are 2D. There is no online multiplayer. There are no fake extra games.
+This is a working **native MVP**, not a production user-generated-content service. All ten catalog entries launch as playable games; Skyline Sprint uses the existing 3D engine, and the other games are 2D. Pulse Run, Cloudroll and Keylight have original local soundtracks that can be toggled in Comfort & Sound. There is no online multiplayer. There are no fake extra games.
 
 Community engagement numbers and leaderboard opponents are clearly labeled seed/demo data. Profiles, follows, publication, reports, and analytics remain on the current device. `loop://game/<id>` links are copyable identifiers; operating-system deep-link registration and a public share-link resolver are future integrations.
 
@@ -105,7 +109,7 @@ core/store.gd        JSON persistence, catalog, recommendations, analytics
 core/service_contracts.gd  Explicit future service seams
 sdk/mini_game.gd     Game lifecycle, snapshots, events, logical drawing helpers
 sdk/template.gd      Copyable minimal game implementation
-games/               Seven independent Control scenes and game scripts
+games/               Ten independent Control scenes and game scripts
 data/games.json      Catalog metadata, input profiles, package references
 assets/              Original LOOP icon
 tests/               Navigation, mechanics, UI flow, restart, rendering checks

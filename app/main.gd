@@ -37,6 +37,7 @@ var immersive_header: Control
 var immersion_tween: Tween
 var publishing: GamePublishingPipeline
 var content_delivery: ContentDeliveryCache
+var supabase_client: LoopSupabaseClient
 var information_open = false
 var info_close_start = Vector2.ZERO
 var info_close_pointer = -999
@@ -47,6 +48,9 @@ func _ready() -> void:
 	Engine.max_fps = 60
 	store = LocalStore.new()
 	publishing = GamePublishingPipeline.new(store.data,store.catalog,store.path)
+	supabase_client = LoopSupabaseClient.new()
+	supabase_client.name = "LoopSupabaseClient"
+	add_child(supabase_client)
 	content_delivery = ContentDeliveryCache.new()
 	content_delivery.name = "ContentDeliveryCache"
 	add_child(content_delivery)
@@ -67,9 +71,10 @@ func _ready() -> void:
 	add_child(game_host)
 	feed = GameFeed.new()
 	add_child(feed)
-	feed.setup(store,game_host)
+	feed.setup(store,game_host,content_delivery,supabase_client)
 	feed.changed.connect(_game_changed)
 	feed.failed.connect(_game_failed)
+	feed.loading.connect(_game_loading)
 	chrome = Control.new()
 	chrome.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(chrome)
@@ -93,6 +98,7 @@ func _ready() -> void:
 	resized.connect(_layout)
 	_layout()
 	feed.launch()
+	refresh_online_catalog()
 	for arg in OS.get_cmdline_user_args():
 		if arg.begins_with("loop://game/"): _open_game_link(arg)
 		if arg.begins_with("--game="): _open_game_link("loop://game/"+arg.trim_prefix("--game="))
@@ -380,6 +386,9 @@ func _navigate(direction: int, method: String) -> void:
 		create_tween().tween_property(feed.current,"modulate:a",1.0,0.18)
 
 func _game_changed(_metadata: Dictionary) -> void:
+	if is_instance_valid(feed.current):feed.current.set_music_enabled(bool(store.data.settings.music))
+	toast_time=0.0
+	if is_instance_valid(toast_label):toast_label.text=""
 	_end_staged_preview()
 	quiet_time = 0
 	_layout()
@@ -451,6 +460,27 @@ func _game_failed(message: String) -> void:
 	_place(retry,Rect2(70,size.y/2-30,size.x-140,50))
 	var skip = D.button("Skip to next game",func(): feed.move(1))
 	_place(skip,Rect2(70,size.y/2+30,size.x-140,50))
+
+func _game_loading(message:String)->void:
+	toast(message)
+	toast_time=30.0
+
+func refresh_online_catalog()->Dictionary:
+	var result:Dictionary=await supabase_client.feed_catalog()
+	if not result.ok:return result
+	var local_entries:Array=[]
+	for metadata in store.catalog:
+		if not metadata.get("remote",false):local_entries.append(metadata)
+	var remote_entries:Array=[]
+	for metadata in result.get("data",[]):
+		if not store.validate_metadata(metadata):continue
+		if local_entries.any(func(existing):return existing.id==metadata.id):continue
+		remote_entries.append(metadata)
+	store.catalog.clear()
+	store.catalog.append_array(local_entries)
+	store.catalog.append_array(remote_entries)
+	if is_instance_valid(feed):feed.sync_catalog()
+	return {"ok":true,"count":remote_entries.size()}
 
 func _show_tab(title: String) -> void:
 	_end_staged_preview()
@@ -619,7 +649,7 @@ func _discover(content: VBoxContainer) -> void:
 		for m in store.catalog:
 			if m.developer_id == id: name_value = m.developer
 		content.add_child(D.button(name_value + "  →",func(): _developer(developer_id)))
-	content.add_child(D.paragraph("An original collection · 6 playable games\nEngagement counts are illustrative seed data.",12))
+	content.add_child(D.paragraph("An original collection · 10 playable games\nEngagement counts are illustrative seed data.",12))
 
 func _library(content: VBoxContainer) -> void:
 	content.add_child(D.paragraph("The good ones are worth coming back to.",17,D.TEXT))
@@ -748,7 +778,8 @@ func _settings() -> void:
 	_toggle(content,"Interface sounds",store.data.settings,"sound")
 	_toggle(content,"Haptic feedback",store.data.settings,"haptics")
 	_toggle(content,"Reduced motion",store.data.settings,"reduced_motion")
-	content.add_child(D.paragraph("Games are intentionally music-free. Dark theme, offline play, and no advertising are included in this edition.",13))
+	content.add_child(D.paragraph("Original game soundtracks can be paused here. Dark theme, offline play, and no advertising are included in this edition.",13))
+	_toggle(content,"Game music",store.data.settings,"music")
 	content.add_child(D.button("Clear saved game sessions",_confirm_clear))
 	content.add_child(D.button("Privacy & local data",_privacy))
 
@@ -787,6 +818,8 @@ func _toggle(content: VBoxContainer, title: String, object: Dictionary, key: Str
 	check.custom_minimum_size.y = 42
 	check.toggled.connect(func(value):
 		object[key] = value
+		if key=="music":
+			for game in feed.cache.values():game.set_music_enabled(value)
 		if key=="reduced_motion":
 			for game in feed.cache.values(): game.reduced_motion = value
 			if is_instance_valid(staged_preview): staged_preview.reduced_motion = value
@@ -796,7 +829,7 @@ func _toggle(content: VBoxContainer, title: String, object: Dictionary, key: Str
 
 func _confirm_clear() -> void:
 	var c = _open_modal("Clear game sessions?")
-	c.add_child(D.paragraph("This restarts all seven games. Your high scores, saved games, profile, and preferences stay intact."))
+	c.add_child(D.paragraph("This restarts all %d games. Your high scores, saved games, profile, and preferences stay intact." % store.catalog.size()))
 	c.add_child(D.button("Clear sessions",func():
 		feed.suspend()
 		for game in feed.cache.values(): game.destroy_game()

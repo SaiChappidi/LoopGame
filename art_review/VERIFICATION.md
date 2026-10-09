@@ -56,3 +56,7 @@ Small World maximum sampled draw calls fell from 594 to 139 after replacing per-
 Run the existing Godot 4.5.2 executable with --path pointing at outputs/Loop and --script res://tests/visual_review.gd -- --phase=after for captures. Use --resolution 1280x800 for the desktop window. Run tests/visual_contract.gd with a display/GPU for timing; tests/visual_input.gd and tests/session_roundtrip.gd support headless execution. Run session_roundtrip first with -- --seed, then without it in a fresh process.
 
 Asset provenance: [ASSET_CREDITS.md](../ASSET_CREDITS.md). No paid or downloaded artwork.
+
+## October 9 rhythm-game update
+
+Pulse Run, Cloudroll and Keylight were added after the visual captures and automated results above. The old counts and screenshots in this report describe the earlier seven-game build. The new games have registered scenes, portrait covers, touch/keyboard controls, pause/resume-safe original soundtracks, and input checks in the test sources. The current workspace's bundled Godot executable exits with a native signal-11 crash when running `--script` tests, so these three games still need an interactive Godot run and fresh portrait/desktop capture before visual/runtime verification can be claimed.

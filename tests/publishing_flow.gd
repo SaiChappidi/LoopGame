@@ -32,6 +32,10 @@ func run()->void:
 	if FileAccess.file_exists(save_path):DirAccess.remove_absolute(save_path)
 	var store=LocalStore.new(save_path)
 	pipeline=GamePublishingPipeline.new(store.data,store.catalog,save_path)
+	var arena_game={"id":"arena_metadata_test","name":"Arena Metadata Test","developer_id":owner,"developer_name":"Local Studio","description":"A bounded test arena.","template":"loop_arena_v1","age_rating":"Everyone","average_session_seconds":90,"minimum_platform":1,"orientation":"portrait","input_profile":{"usesTap":true},"visibility":"Private","category":"Arcade","asset_inventory":[]}
+	var arena_version={"version":"1.0","game_metadata":arena_game,"manifest":{"initialDownloadBytes":0},"package_bytes":0}
+	var arena_runtime=pipeline._runtime_metadata(arena_game,arena_version,CreatorArenaRuntime.default_definition())
+	check(arena_runtime.orientation=="portrait" and arena_runtime.minimum_platform==1,"custom runtime metadata preserves supported orientation and SDK version")
 	var input={}
 	for flag in store.game("runner").input:input[flag]=store.game("runner").input[flag]
 	var fields={"id":game_id,"name":"Night Track","developer_name":"Local Studio","short_description":"Run this neon course.","description":"An original endless race through a quiet city at night.","template":"runner","category":"Runner","tags":["arcade","runner"],"age_rating":"Everyone","orientation":"portrait","input_profile":input,"supports_resume":true,"average_session_seconds":120,"minimum_platform":1,"visibility":"Public","capabilities":["achievements"],"asset_inventory":[],"release_notes":"First playable release"}

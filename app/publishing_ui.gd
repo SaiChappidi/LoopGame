@@ -4,11 +4,19 @@ const D = preload("res://app/design.gd")
 const TEMPLATE_IDS = ["loop_arena_v1","stack","runner","crowd","racer","merge","prism_stack","lantern_trail"]
 const TEMPLATE_NAMES = ["Arena Studio · custom rules","Stack Studio","Skyline Sprint","Cell Garden","Coastline","Soft Numbers","Prism Stack","Lantern Trail"]
 
+static func _trimmed_csv(value:String) -> Array:
+	var items:Array=[]
+	for part in value.split(",",false):
+		var item=part.strip_edges()
+		if not item.is_empty():items.append(item)
+	return items
+
 static func dashboard(app,query:String="",status:String="All") -> void:
 	var c=app._open_modal("Developer dashboard · Airlock")
 	c.add_child(D.label("LOCAL PUBLISHING LAB",11,D.LIME))
 	c.add_child(D.paragraph("Create a listing, stage an immutable ZIP, inspect every validation gate, preview the version, request review, and publish only after approval. Packages use data-only game.json definitions with trusted LOOP runtimes. Uploaded scripts are never executed.",13))
 	c.add_child(D.button("+ Create a game",func():new_game(app),true))
+	c.add_child(D.button("Online test server · Supabase",func():online_console(app)))
 	var admin=app.publishing.data.publishing_settings
 	c.add_child(D.button("Admin review queue · %s awaiting" % _awaiting(app),func():admin_queue(app)))
 	c.add_child(D.button("Airlock & publishing settings",func():settings(app)))
@@ -46,9 +54,10 @@ static func dashboard(app,query:String="",status:String="All") -> void:
 				listings.add_child(D.label("v"+row.version+"   ·   "+("● LIVE" if current else _state_label(row.state)),15,D.LIME if current else D.TEXT))
 				listings.add_child(D.paragraph("%s · %s bytes · SHA-256 %s\n%s\n%s" % [_state_label(row.state),row.package_bytes,row.sha256.substr(0,20)+"…" if row.sha256.length()>20 else row.sha256,row.release_notes if not row.release_notes.is_empty() else "No release notes",("Airlock run "+row.airlock_run) if not row.airlock_run.is_empty() else "Not uploaded yet"],12))
 				match row.state:
-					"Draft","ValidationFailed","ReviewRejected","Uploading":
+					"Draft","ReviewRejected","Uploading":
 						listings.add_child(D.button("Upload ZIP → Airlock",func():choose_upload(app,row.version_id)))
 					"Uploaded":listings.add_child(D.button("Run Airlock validation",func():run_airlock(app,row.version_id)))
+					"ValidationFailed":listings.add_child(D.button("Retry Airlock validation",func():run_airlock(app,row.version_id)))
 					"ValidationPassed":
 						listings.add_child(D.button("Preview exact staged version",func():preview(app,row.version_id)))
 						listings.add_child(D.button("Submit for manual review",func():submit_review(app,row.version_id)))
@@ -75,6 +84,150 @@ static func dashboard(app,query:String="",status:String="All") -> void:
 		listings.add_child(HSeparator.new());listings.add_child(D.label("Developer alerts",17))
 		for item in notifications.slice(0,5):listings.add_child(D.paragraph(item.message+" · "+str(item.version_id),12,D.MUTED))
 	render.call()
+
+static func online_console(app) -> void:
+	var client: LoopSupabaseClient = app.supabase_client
+	var c = app._open_modal("Online publishing test")
+	c.add_child(D.paragraph("Connect this local LOOP build to your private Supabase test project. The app uses only its publishable key and signed-in user token. Uploaded packages stay private until a reviewer approves and publishes them.", 12))
+	var url := LineEdit.new()
+	url.placeholder_text = "https://your-project.supabase.co"
+	url.text = client.project_url
+	url.custom_minimum_size.y = 42
+	c.add_child(D.label("Project URL", 13)); c.add_child(url)
+	var key := LineEdit.new()
+	key.placeholder_text = "sb_publishable_…"
+	key.text = client.publishable_key
+	key.custom_minimum_size.y = 42
+	c.add_child(D.label("Publishable key", 13)); c.add_child(key)
+	var email := LineEdit.new()
+	email.placeholder_text = "test account email"
+	email.custom_minimum_size.y = 42
+	c.add_child(D.label("Email", 13)); c.add_child(email)
+	var password := LineEdit.new()
+	password.placeholder_text = "password"
+	password.secret = true
+	password.custom_minimum_size.y = 42
+	c.add_child(D.label("Password (held in memory for sign-in only)", 13)); c.add_child(password)
+	var status := D.paragraph("Not connected yet.", 12, D.MUTED)
+	c.add_child(status)
+	var remote_rows := VBoxContainer.new()
+	remote_rows.add_theme_constant_override("separation", 8)
+	c.add_child(remote_rows)
+	c.add_child(D.button("Save settings and test connection", func():
+		var saved: Dictionary = client.configure(url.text, key.text)
+		if not saved.ok:
+			status.text = str(saved.error)
+			return
+		status.text = "Connecting to the test database…"
+		var result: Dictionary = await client.test_connection()
+		status.text = "Supabase connected. Sign in below." if result.ok else "Connection failed: " + str(result.error)
+	))
+	c.add_child(D.button("Sign in and load online publishing tools", func():
+		var configured: Dictionary = client.configure(url.text, key.text)
+		if not configured.ok:
+			status.text = str(configured.error)
+			return
+		status.text = "Signing in…"
+		var result: Dictionary = await client.sign_in(email.text, password.text)
+		password.clear()
+		if not result.ok:
+			status.text = "Sign-in failed: " + str(result.error)
+			return
+		var roles: Dictionary = await client.current_role()
+		if not roles.ok:
+			status.text = "Signed in, but role lookup failed: " + str(roles.error)
+			return
+		var role_name := "unassigned"
+		if roles.data is Array and not roles.data.is_empty():
+			role_name = str(roles.data[0].get("role", "unassigned"))
+		status.text = "Signed in as %s · role: %s" % [str(result.user.get("email", email.text)), role_name]
+		_online_actions(app, remote_rows, status, role_name)
+	))
+	if client.user.is_empty():
+		return
+	var existing_role := "developer"
+	var existing_roles: Dictionary = await client.current_role()
+	if existing_roles.ok and existing_roles.data is Array and not existing_roles.data.is_empty():
+		existing_role = str(existing_roles.data[0].get("role", "developer"))
+	status.text = "Signed in as %s · role: %s" % [str(client.user.get("email", "")), existing_role]
+	_online_actions(app, remote_rows, status, existing_role)
+
+static func _online_actions(app, rows: VBoxContainer, status: Label, role_name: String) -> void:
+	for child in rows.get_children():
+		child.queue_free()
+	rows.add_child(HSeparator.new())
+	if role_name in ["reviewer", "admin"]:
+		rows.add_child(D.button("Refresh pending review queue", func():
+			status.text = "Loading online review queue…"
+			var result: Dictionary = await app.supabase_client.review_queue()
+			if not result.ok:
+				status.text = "Review queue failed: " + str(result.error)
+				return
+			for child in rows.get_children():
+				if child is Label or child is Button or child is HSeparator: child.queue_free()
+			for item in result.data:
+				var game: Dictionary = item.get("loop_games", {})
+				var version_id := str(item.id)
+				rows.add_child(D.label("%s · v%s · pending review" % [str(game.get("title", item.game_id)), str(item.version)], 15, D.LIME))
+				rows.add_child(D.paragraph("%s bytes · SHA-256 %s\n%s" % [str(item.package_bytes), str(item.sha256), str(item.get("release_notes", ""))], 11))
+				var notes := LineEdit.new(); notes.placeholder_text = "Reviewer notes"; notes.custom_minimum_size.y = 40; rows.add_child(notes)
+				rows.add_child(D.button("Approve", func():
+					var reviewed: Dictionary = await app.supabase_client.review_version(version_id, true, notes.text)
+					status.text = "Approved for publication." if reviewed.ok else "Review failed: " + str(reviewed.error)
+				))
+				rows.add_child(D.button("Reject", func():
+					var reviewed: Dictionary = await app.supabase_client.review_version(version_id, false, notes.text)
+					status.text = "Rejected with notes." if reviewed.ok else "Review failed: " + str(reviewed.error)
+				))
+			status.text = "Loaded %d submission(s)." % result.data.size()
+		))
+		rows.add_child(D.button("Show approved versions to publish", func():
+			status.text = "Loading approved versions…"
+			var result: Dictionary = await app.supabase_client.approved_queue()
+			if not result.ok:
+				status.text = "Approved list failed: " + str(result.error)
+				return
+			for item in result.data:
+				var game: Dictionary = item.get("loop_games", {})
+				var version_id := str(item.id)
+				rows.add_child(D.label("%s · v%s · approved" % [str(game.get("title", item.game_id)), str(item.version)], 14, D.LIME))
+				rows.add_child(D.button("Publish this version", func():
+					var published: Dictionary = await app.supabase_client.publish_version(version_id)
+					status.text = "Published online." if published.ok else "Publish failed: " + str(published.error)
+				))
+			status.text = "Loaded %d approved version(s)." % result.data.size()
+		))
+	else:
+		var passed: Array = app.publishing.data.game_versions.filter(func(v): return v.state == "ValidationPassed" and not str(v.get("package_path", "")).is_empty())
+		if passed.is_empty():
+			rows.add_child(D.paragraph("Create a listing, build/upload its package, and pass the local Airlock first. Its exact validated package will be available to submit online here.", 12))
+		for version_data in passed:
+			var version_id := str(version_data.version_id)
+			var game_data: Dictionary = app.publishing.project(str(version_data.game_id))
+			rows.add_child(D.label("%s · v%s · local Airlock passed" % [str(game_data.get("name", version_data.game_id)), str(version_data.version)], 14, D.LIME))
+			rows.add_child(D.button("Upload this validated package for human review", func():
+				status.text = "Uploading a private package and creating the review submission…"
+				var result: Dictionary = await app.supabase_client.create_submission(game_data, version_data, str(version_data.package_path))
+				status.text = "Submitted online as %s v%s." % [str(game_data.get("name", version_data.game_id)), str(version_data.version)] if result.ok else "Online submission failed: " + str(result.error)
+			))
+	rows.add_child(D.button("Refresh published online games", func():
+		status.text = "Loading published games into the LOOP feed…"
+		var result: Dictionary = await app.refresh_online_catalog()
+		if not result.ok:
+			status.text = "Catalog request failed: " + str(result.error)
+			return
+		for child in rows.get_children(): child.queue_free()
+		for item in app.store.catalog:
+			if item.get("remote",false):
+				rows.add_child(D.label(str(item.get("name",item.get("id","Game"))), 14, D.LIME))
+				rows.add_child(D.paragraph("%s · v%s · hosted online" % [str(item.get("developer","LOOP Creator")),str(item.get("version",""))], 12))
+		status.text = "Added %d published online game(s) to the LOOP feed." % int(result.get("count",0))
+	))
+	rows.add_child(D.button("Sign out of online test account", func():
+		app.supabase_client.sign_out()
+		for child in rows.get_children(): child.queue_free()
+		status.text = "Signed out."
+	))
 
 static func new_game(app,existing:Dictionary={})->void:
 	var game=existing
@@ -112,7 +265,7 @@ static func new_game(app,existing:Dictionary={})->void:
 		var inventory=[]
 		for line in assets.text.split("\n",false):inventory.append({"path":line.strip_edges()})
 		var input={};for flag in controls:input[flag]=controls[flag].button_pressed
-		var request={"name":fields.name.text,"id":fields.id.text,"developer_name":fields.developer_name.text,"short_description":fields.short_description.text,"description":description.text,"template":selected,"category":category.get_item_text(category.selected),"tags":tags.text.split(",",false).map(func(x):return x.strip_edges()),"age_rating":rating.get_item_text(rating.selected),"visibility":visibility.get_item_text(visibility.selected),"average_session_seconds":int(session.value),"minimum_platform":int(min_platform.value),"supports_resume":resume.button_pressed,"capabilities":capabilities.text.split(",",false).map(func(x):return x.strip_edges()),"input_profile":input,"asset_inventory":inventory,"thumbnail":thumb.text.strip_edges(),"icon":icon.text.strip_edges(),"screenshots":screenshots.text.split(",",false).map(func(x):return x.strip_edges()),"release_notes":release.text.substr(0,2000),"initial_version":initial_version.text.strip_edges()}
+		var request={"name":fields.name.text,"id":fields.id.text,"developer_name":fields.developer_name.text,"short_description":fields.short_description.text,"description":description.text,"template":selected,"category":category.get_item_text(category.selected),"tags":_trimmed_csv(tags.text),"age_rating":rating.get_item_text(rating.selected),"visibility":visibility.get_item_text(visibility.selected),"average_session_seconds":int(session.value),"minimum_platform":int(min_platform.value),"supports_resume":resume.button_pressed,"capabilities":_trimmed_csv(capabilities.text),"input_profile":input,"asset_inventory":inventory,"thumbnail":thumb.text.strip_edges(),"icon":icon.text.strip_edges(),"screenshots":_trimmed_csv(screenshots.text),"release_notes":release.text.substr(0,2000),"initial_version":initial_version.text.strip_edges()}
 		var save_button:Button=c.find_child("SaveDraftButton",true,false) as Button
 		if save_button:save_button.disabled=true
 		var result=app.publishing.update_metadata(game.id,_owner(app),request) if not game.is_empty() else app.publishing.create_game(_owner(app),request)
@@ -312,7 +465,6 @@ static func upload_package(app,version_id:String,source:String)->void:
 	var root=app.store.path.get_base_dir().path_join("game-packages").path_join(v.game_id)
 	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(root))
 	var destination=ProjectSettings.globalize_path(root.path_join(v.version+".zip"))
-	if FileAccess.file_exists(destination):app.toast("That version package already exists. A package is never overwritten.");return
 	var temporary=destination+".part"
 	if FileAccess.file_exists(temporary):DirAccess.remove_absolute(temporary)
 	var output=FileAccess.open(temporary,FileAccess.WRITE)
@@ -331,6 +483,14 @@ static func upload_package(app,version_id:String,source:String)->void:
 	input.close();output.close()
 	if done!=total:
 		DirAccess.remove_absolute(temporary);app.publishing.transition(version_id,"Draft",_owner(app),{"interrupted":true});app.toast("Upload stopped early. Try the file again.");dashboard(app);return
+	# A package that failed validation is still sitting at the immutable destination.
+	# Drafts have no accepted digest yet, so replace that rejected attempt on retry.
+	if FileAccess.file_exists(destination):
+		if not str(v.get("sha256","")).is_empty() or not str(v.get("package_path","")).is_empty():
+			DirAccess.remove_absolute(temporary);app.publishing.transition(version_id,"Draft",_owner(app));app.toast("This version already has an accepted package. Create a new version to replace it.");return
+		var removed=DirAccess.remove_absolute(destination)
+		if removed!=OK:
+			DirAccess.remove_absolute(temporary);app.publishing.transition(version_id,"Draft",_owner(app));app.toast("Could not replace the previous rejected package. Close any file window using it, then retry.");return
 	var moved=DirAccess.rename_absolute(temporary,destination)
 	if moved!=OK:app.publishing.transition(version_id,"Draft",_owner(app));app.toast("Upload could not be committed as an immutable version.");dashboard(app);return
 	var checked=app.publishing.validate_package(destination,v)
@@ -344,8 +504,10 @@ static func upload_package(app,version_id:String,source:String)->void:
 
 static func run_airlock(app,version_id:String)->void:
 	var result=app.publishing.run_airlock(version_id,_owner(app))
-	if result.ok:airlock_results(app,result.run)
-	else:app.toast(result.error)
+	if result.has("run"):
+		airlock_results(app,result.run)
+	elif not result.ok:
+		app.toast(str(result.get("error","Airlock could not start. Check that the package is uploaded and try again.")))
 
 static func airlock_results(app,run:Dictionary)->void:
 	var v=app.publishing.version(run.version_id)

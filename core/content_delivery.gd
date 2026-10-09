@@ -40,7 +40,7 @@ func cached_path(sha256:String)->String:
 	_save_index()
 	return path
 
-func fetch(game_id:String,url:String,sha256:String,expected_bytes:int=0)->bool:
+func fetch(game_id:String,url:String,sha256:String,expected_bytes:int=0,request_headers:PackedStringArray=PackedStringArray())->bool:
 	if game_id.is_empty() or not _valid_digest(sha256):
 		failed.emit(game_id,"The experience manifest has an invalid package identity.")
 		return false
@@ -65,7 +65,7 @@ func fetch(game_id:String,url:String,sha256:String,expected_bytes:int=0)->bool:
 	request.download_file=ProjectSettings.globalize_path(part)
 	add_child(request)
 	request.request_completed.connect(_on_completed.bind(game_id,sha256.to_lower(),expected_bytes,part,request))
-	var result=request.request(url)
+	var result=request.request(url,request_headers)
 	if result!=OK:
 		request.queue_free()
 		failed.emit(game_id,"Could not start the experience download (error %s)."%result)

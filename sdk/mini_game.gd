@@ -15,6 +15,7 @@ var world: ColorRect
 var world_material: ShaderMaterial
 var reserved_regions: Array[Rect2] = []
 var reduced_motion = false
+var music_enabled = true
 var art_clock = 0.0
 var feedback = 0.0
 var art_styles: Dictionary = {}
@@ -83,6 +84,7 @@ func load_state(saved: Dictionary) -> void:
 	started = true
 	queue_redraw()
 func destroy_game() -> void: queue_free()
+func set_music_enabled(enabled: bool) -> void: music_enabled = enabled
 func get_score() -> int: return int(state.get("score",0))
 func get_game_metadata() -> Dictionary: return metadata.duplicate(true)
 func get_input_profile() -> Dictionary: return metadata.get("input",{}).duplicate()
@@ -142,7 +144,7 @@ func hud(instruction: String) -> void:
 	text_at(instruction,Vector2(instruction_x,size.y-126),Color("d8e2df"),11)
 	if state.get("over",false):
 		draw_rect(Rect2(Vector2.ZERO,size),Color(0.02,0.03,0.05,0.88))
-		var titles = {"stack":"A STUDY IN BALANCE", "runner":"END OF THE LINE", "crowd":"A NEW GENERATION", "racer":"UNTIL THE NEXT COAST", "merge":"ROOM TO BEGIN AGAIN", "cell_odyssey":"A NEW GENERATION"}
+		var titles = {"stack":"A STUDY IN BALANCE", "runner":"END OF THE LINE", "crowd":"A NEW GENERATION", "racer":"UNTIL THE NEXT COAST", "merge":"ROOM TO BEGIN AGAIN", "cell_odyssey":"A NEW GENERATION", "geometry_dash":"OUT OF THE GROOVE", "rolling_sky":"THE LAST GLASSWAY", "piano_tiles":"THE FINAL NOTE"}
 		round_rect(Rect2(size*0.5-Vector2(185,112),Vector2(370,276)),Color("182735"),22)
 		draw_line(size*0.5+Vector2(-155,-82),size*0.5+Vector2(155,-82),accent,2,true)
 		centered(metadata.get("name","LOOP").to_upper(),size*0.5+Vector2(0,-57),accent,11)

@@ -19,6 +19,7 @@ func run():
 	for id in app.feed.ids.duplicate():
 		app._launch(id)
 		var g=app.feed.current
+		g.set_music_enabled(false)
 		g.restart_game()
 		var snapshot=g.save_state()
 		g.pause_game()

@@ -14,7 +14,7 @@ func _init(save_path: String = PATH) -> void:
 		if FileAccess.file_exists(portable.path_join("Loop.pck")):
 			DirAccess.make_dir_recursive_absolute(portable.path_join("data"))
 			path = portable.path_join("data/loop-v1.json")
-	data = {"schema":1, "nav":DEFAULT_NAV.duplicate(true), "settings":{"sound":true,"music":false,"haptics":true,"reduced_motion":false,"notifications":false}, "likes":[],"saved":[],"follows":[],"recent":[],"sessions":{},"scores":{},"events":[],"reports":[],"drafts":[],"achievements":[],"playtime":0.0,"feed":[],"profile":{"name":"Alex","handle":"alex.plays","bio":"Always up for one more game."}}
+	data = {"schema":1, "nav":DEFAULT_NAV.duplicate(true), "settings":{"sound":true,"music":true,"haptics":true,"reduced_motion":false,"notifications":false}, "likes":[],"saved":[],"follows":[],"recent":[],"sessions":{},"scores":{},"events":[],"reports":[],"drafts":[],"achievements":[],"playtime":0.0,"feed":[],"profile":{"name":"Alex","handle":"alex.plays","bio":"Always up for one more game."}}
 	data.merge({"feed_cursor":"","feed_previous":"","comments":{},"catalog_migrations":{},"progress":{},"collections":[],"tutorial_seen":[],"metrics":{},"disabled":{},"content":{"max_age":18},"experiments":{},"takedowns":[],"compatibility":{},"time_budget":0.0,"developer_projects":[],"game_versions":[],"airlock_runs":[],"game_reviews":[],"audit_log":[],"developer_notifications":[],"publishing_settings":{"review_required":true,"max_package_bytes":15728640,"max_initial_download_bytes":2097152,"max_startup_ms":1000,"max_tick_p95_ms":4.0,"max_memory_bytes":100663296,"warnings_block":false}})
 	if FileAccess.file_exists(path):
 		var parser = JSON.new()
@@ -30,6 +30,11 @@ func _init(save_path: String = PATH) -> void:
 		else:
 			errors.append("Save could not be read; defaults restored. Original retained as .corrupt.")
 			DirAccess.copy_absolute(path, path + ".corrupt")
+	# Older builds exposed a dormant music preference but shipped music-free games;
+	# enable the new original game scores once, while preserving later user choices.
+	if not data.catalog_migrations.get("original_rhythm_soundtracks",false):
+		data.settings.music=true
+		data.catalog_migrations.original_rhythm_soundtracks=true
 	if not data.catalog_migrations.get("cell_garden_v2",false):
 		data.sessions.erase("crowd")
 		data.scores.erase("crowd")

@@ -6,7 +6,7 @@ const ALLOWED_CAPABILITIES = ["local_storage","leaderboard","achievements","anal
 const TRANSITIONS = {
 	"Draft":["Uploading","Archived"],"Uploading":["Uploaded","Draft"],"Uploaded":["AirlockQueued","Draft","Archived"],
 	"AirlockQueued":["AirlockValidating"],"AirlockValidating":["ValidationFailed","ValidationPassed"],
-	"ValidationFailed":["Uploading","Draft","Archived"],"ValidationPassed":["AwaitingReview","Approved","Uploading","Archived"],
+	"ValidationFailed":["Uploading","AirlockQueued","Draft","Archived"],"ValidationPassed":["AwaitingReview","Approved","Uploading","Archived"],
 	"AwaitingReview":["Approved","ReviewRejected"],"ReviewRejected":["Uploading","Archived"],
 	"Approved":["Scheduled","Published","Archived"],"Scheduled":["Published","Approved"],
 	"Published":["Unpublished","Disabled","Approved","Archived"],"Unpublished":["Published","Disabled","Archived"],
@@ -242,7 +242,7 @@ func _u32(bytes:PackedByteArray,at:int)->int:
 
 func run_airlock(version_id: String, owner_id: String) -> Dictionary:
 	var v=version(version_id)
-	if v.is_empty() or v.developer_id!=owner_id or v.state!="Uploaded": return _fail("Only this developer's uploaded version can enter the Airlock.")
+	if v.is_empty() or v.developer_id!=owner_id or v.state not in ["Uploaded","ValidationFailed"]: return _fail("Only this developer's uploaded version can enter the Airlock.")
 	var queued=transition(version_id,"AirlockQueued",owner_id)
 	if not queued.ok: return queued
 	transition(version_id,"AirlockValidating",owner_id)
@@ -470,6 +470,8 @@ func _runtime_metadata(game:Dictionary,v:Dictionary,game_config:Dictionary={})->
 	template.developer=game.developer_name
 	template.description=game.description
 	template.version=v.version
+	template.orientation=game.orientation
+	template.minimum_platform=game.minimum_platform
 	template.age_rating=game.age_rating
 	template.average_session_seconds=game.average_session_seconds
 	template.input=game.input_profile

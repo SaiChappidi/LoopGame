@@ -11,6 +11,7 @@ func run():
 	for m in entries:
 		var g=load(m.scene).instantiate()
 		g.initialize_game(m)
+		g.set_music_enabled(false)
 		if saving:
 			g.start_game()
 			g.receive_input("right",Vector2(250,250))

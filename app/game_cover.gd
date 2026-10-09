@@ -71,3 +71,27 @@ func _draw() -> void:
 			draw_circle(Vector2(42,38),5,Color("ffc66d",0.2))
 			draw_style_box(LoopDesign.box(Color("8e5a3e"),1),Rect2(40,35,4,7))
 			draw_rect(Rect2(41,36,2,4),Color("ffe59d"))
+		"geometry_dash":
+			for i in 5:
+				var x=4+i*14
+				draw_rect(Rect2(x,17+(i%2)*5,10,43),Color("24304e"))
+				draw_rect(Rect2(x+2,22+(i%2)*5,3,3),Color("8eece0",0.8))
+			draw_colored_polygon(PackedVector2Array([Vector2(0,59),Vector2(66,59),Vector2(66,70),Vector2(0,70)]),Color("131a2b"))
+			draw_colored_polygon(PackedVector2Array([Vector2(23,47),Vector2(39,47),Vector2(39,63),Vector2(23,63)]),Color("69e5d7"))
+			draw_rect(Rect2(27,51,8,8),Color("26829a"))
+			draw_colored_polygon(PackedVector2Array([Vector2(48,59),Vector2(54,49),Vector2(60,59)]),Color("ff778f"))
+		"rolling_sky":
+			for i in 4:
+				var y=21+i*10
+				var w=10+i*11
+				draw_colored_polygon(PackedVector2Array([Vector2(33-w,y),Vector2(33+w,y),Vector2(33+w+5,y+7),Vector2(33-w-5,y+7)]),Color("405a7a",0.72))
+			draw_colored_polygon(PackedVector2Array([Vector2(5,68),Vector2(21,26),Vector2(33,68)]),Color("667e93"))
+			draw_colored_polygon(PackedVector2Array([Vector2(27,68),Vector2(43,23),Vector2(61,68)]),Color("8994a4"))
+			draw_circle(Vector2(34,44),9,Color("9cdeeb"));draw_circle(Vector2(31,41),4,Color("e6fbf4"))
+		"piano_tiles":
+			var tints=[Color("f08c91"),Color("edc274"),Color("83c9bd"),Color("a7a0e4")]
+			for lane in 4:
+				var x=4+lane*15
+				draw_rect(Rect2(x,10,13,56),Color("211f30"))
+				draw_style_box(LoopDesign.box(tints[lane].darkened(0.14),3),Rect2(x+1,19+((lane*13)%25),11,13))
+				draw_line(Vector2(x+3,22+((lane*13)%25)),Vector2(x+10,22+((lane*13)%25)),tints[lane].lightened(0.25),1,true)

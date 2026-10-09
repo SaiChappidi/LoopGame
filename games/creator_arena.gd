@@ -56,7 +56,9 @@ static func _number_in(value:Variant,low:float,high:float)->bool:
 	return (value is int or value is float) and is_finite(float(value)) and float(value)>=low and float(value)<=high
 
 static func _integer_in(value:Variant,low:int,high:int)->bool:
-	return value is int and int(value)>=low and int(value)<=high
+	if not (value is int or value is float):return false
+	var number=float(value)
+	return is_finite(number) and floorf(number)==number and number>=low and number<=high
 
 static func _string_len(value:Variant,low:int,high:int)->bool:
 	return value is String and value.length()>=low and value.length()<=high

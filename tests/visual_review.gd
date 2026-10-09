@@ -27,6 +27,7 @@ func run():
 		seed(812)
 		app._launch(id)
 		var g=app.feed.current
+		g.set_music_enabled(false)
 		g.restart_game()
 		g.set_process(false)
 		for n in 100:
@@ -38,6 +39,9 @@ func run():
 			elif id=="racer" and n%30==0: g.receive_input("left" if n%60==0 else "right")
 			elif id=="runner" and n%30==0: g.receive_input("up")
 			elif id=="cell_odyssey" and n%30==0: g.receive_input("right")
+			elif id=="geometry_dash" and n%24==0: g.receive_input("tap")
+			elif id=="rolling_sky" and n%25==0: g.receive_input(["left","right","up"][n/25%3])
+			elif id=="piano_tiles" and n%30==0: g.receive_input("tap",Vector2((n/30%4)*100+50,220))
 			g.tick(0.016)
 		g.queue_redraw()
 		app._playing()
@@ -68,6 +72,12 @@ func run():
 				g.state.bots[1].x=g.state.player_x-90
 				g.state.bots[1].y=g.state.player_y+80
 				g.state.bots[1].radius=30
+			"geometry_dash":g.state.distance=2950.0
+			"rolling_sky":g.state.progress=18.0
+			"piano_tiles":
+				g.state.song_time=7.0
+				g.state.score=950
+				g.state.combo=8
 		g.queue_redraw()
 		await snap(id+"-"+view_name+"-detail")
 		g.load_state(saved)

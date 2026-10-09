@@ -22,7 +22,7 @@ func run():
 	app._close_modal()
 	for id in app.feed.ids.duplicate():
 		app._launch(id)
-		var g=app.feed.current;g.restart_game();g.set_process(false)
+		var g=app.feed.current;g.set_music_enabled(false);g.restart_game();g.set_process(false)
 		var scale_value=minf(g.size.x/400,g.size.y/480)
 		var origin=g.global_position+(g.size-Vector2(400,480)*scale_value)*0.5
 		match id:
@@ -43,6 +43,12 @@ func run():
 				key(KEY_LEFT);check(g.state.tiles[0]==4 and g.state.score==4,"merge: animation preserves immediate logical result")
 			"cell_odyssey":
 				key(KEY_RIGHT);check(g.state.target_x>g.state.player_x,"arena: routed movement key")
+			"geometry_dash":
+				key(KEY_UP);check(not g.state.grounded and g.state.jump_v<0,"pulse run: jump starts immediately from the routed key")
+			"rolling_sky":
+				key(KEY_LEFT);key(KEY_UP);check(g.state.lane==0 and g.state.jump>0,"cloudroll: lane change and hop use routed keys")
+			"piano_tiles":
+				g.state.song_time=1.5;key(KEY_LEFT);key(KEY_UP);check(g.state.hits==1 and g.state.score>0,"keylight: routed key plays the selected note on time")
 		key(KEY_ESCAPE)
 		check(app.modal_open and not g.running,id+": escape pauses")
 		key(KEY_ESCAPE)

@@ -176,7 +176,7 @@ func run() -> void:
 	await process_frame
 	click("Save new listing version",app.modal)
 	check(app.store.data.drafts.size() > 0 and app.store.data.drafts.back().visibility=="Draft","legacy listing controls cannot publish around the Airlock")
-	check(app.store.data.developer_projects.is_empty() and app.store.catalog.size()==7,"only the new audited dashboard can create a developer catalog entry")
+	check(app.store.data.developer_projects.is_empty() and app.store.catalog.size()==10,"only the new audited dashboard can create a developer catalog entry")
 	app._close_modal()
 	app.feed.checkpoint()
 	var saved = LocalStore.new()
@@ -187,4 +187,3 @@ func run() -> void:
 	await process_frame
 	print("RESULT: %s UI checks, %s failures" % [checks,failures.size()])
 	quit(0 if failures.is_empty() else 1)
-

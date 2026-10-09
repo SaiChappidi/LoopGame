@@ -11,6 +11,11 @@ func run()->void:
 	custom.opponents.count=4
 	custom.goal.target_radius=62
 	assert(CreatorArenaRuntime.validate_definition(custom).is_empty())
+	var decoded_definition=JSON.parse_string(JSON.stringify(custom))
+	assert(CreatorArenaRuntime.validate_definition(decoded_definition).is_empty())
+	var fractional_count=decoded_definition.duplicate(true)
+	fractional_count.pellets.count=36.5
+	assert(not CreatorArenaRuntime.validate_definition(fractional_count).is_empty())
 	var unsafe=custom.duplicate(true)
 	unsafe["script"]="extends Node"
 	assert(not CreatorArenaRuntime.validate_definition(unsafe).is_empty())
